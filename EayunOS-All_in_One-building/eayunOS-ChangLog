@@ -1,0 +1,36 @@
+* 2014年03月20日，16时36分44秒，赵超，<chao.zhao@eayun.com>
+- 主要改动：
+- 1. 调整和确定软件包来源：
+-   a) 基础软件，从CentOS官方源的base和updates获取；
+-   b) EPEL软件源；
+-   c) oVirt官方源；
+-   d) glusterfs官方源；
+-   e) EayunOS源，自行编译的软件包（包括oVirt和
+-      glusterfs，banding等）。
+- 目前通过yum的priority插件实现重复软件包的优先级，默认所有软件源均为最低级
+- 别99，调整oVirt和glusterfs官方源为98，EayunOS源为97。
+-
+- 2. 调整软件包comps信息：
+-   a) 调整分组，分为core，epel，ovirt-management，以及ovirt-node；
+-   b) 调整category，分为：
+-      * All_in_One，包括上面所有4个分组；
+-      * oVirt_MNG_only，包括core，epel，ovirt-management；
+-      * oVirt_Node_only, 包括core，epel，ovirt-node；
+-
+- 3. 调整kickstart安装配置，提供3种配置，分别对应上述3种软件包分组组合：
+-    All_in_One，oVirt_MNG_only及oVirt_Node_only。
+-
+- 其他说明：
+- 1. EayunOS的软件源地址为：
+-    http://192.168.3.159/eayunVirt/rpms/oVirt/6/
+-    ISO的发布目录为：
+-    http://192.168.3.159/eayunVirt/ISO/
+-
+- 2. 目前在我的测试服务器上对上游项目的软件源做了镜像，可以通过下面的地
+-    址进行访问：
+-    http://192.168.3.239/mirrors/
+-
+- 3. 使用yum的priority插件，安装yum-plugin-priorities，使用的方法是：在yum的
+-    repo配置文件中增加priority=N的配置，默认所有软件源的优先级别均为99（99为
+-    最低优先级，数字越小优先级越高）。由于使用priority会降低yum的效率，不建
+-    议用于复杂的层级关系。
