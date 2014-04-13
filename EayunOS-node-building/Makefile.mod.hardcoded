@@ -80,12 +80,13 @@ AUTOCONF = ${SHELL} /root/ovirt-node-building/upstream/ovirt-node-iso/missing --
 AUTOHEADER = ${SHELL} /root/ovirt-node-building/upstream/ovirt-node-iso/missing --run autoheader
 AUTOMAKE = ${SHELL} /root/ovirt-node-building/upstream/ovirt-node-iso/missing --run automake-1.11
 AWK = gawk
-BUILD_NUMBER = 201403181455
+#BUILD_NUMBER = 201403181455
+BUILD_NUMBER = $(shell date +%Y%m%d%H%M)
 CENTOS = 6
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"ovirt-node\" -DPACKAGE_TARNAME=\"ovirt-node\" -DPACKAGE_VERSION=\"3.0.4\" -DPACKAGE_STRING=\"ovirt-node\ 3.0.4\" -DPACKAGE_BUGREPORT=\"node-devel@ovirt.org\" -DPACKAGE=\"ovirt-node\" -DVERSION=\"3.0.4\"
 #DISTRO = centos6
-DISTRO = eayunos-node-4.0
+DISTRO = EayunOS-Node-4.0
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
@@ -101,15 +102,15 @@ LTLIBOBJS =
 MAKEINFO = ${SHELL} /root/ovirt-node-building/upstream/ovirt-node-iso/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 #PACKAGE = ovirt-node-iso
-PACKAGE = eayunos-node-iso
+PACKAGE = EayunOS-Node-iso
 PACKAGE_BUGREPORT = node-devel@ovirt.org
 #PACKAGE_NAME = ovirt-node-iso
 #PACKAGE_STRING = ovirt-node 3.0.4
 #PACKAGE_TARNAME = ovirt-node
 #PACKAGE_VERSION = 3.0.4
-PACKAGE_NAME = eayunos-node-iso
-PACKAGE_STRING = eayunos-node 4.0
-PACKAGE_TARNAME = eayunos-node
+PACKAGE_NAME = EayunOS-Node-iso
+PACKAGE_STRING = EayunOS-Node 4.0
+PACKAGE_TARNAME = EayunOS-Node
 PACKAGE_VERSION = 4.0
 PATH_SEPARATOR = :
 #PRODUCT_NAME = oVirt Node Hypervisor
@@ -165,13 +166,14 @@ RECIPE = $(PACKAGE).ks
 PRODUCT = EayunOS Node Hypervisor
 PKG_FMT = iso
 ARCH = $(shell rpm --eval '%{_arch}')
-RELEASE := $(shell rpm -q --qf "%{RELEASE}\n" --define "BUILD_NUMBER $(BUILD_NUMBER)" --specfile ./ovirt-node-iso.spec | head -n1)
-#RELEASE=1
+#RELEASE := $(shell rpm -q --qf "%{RELEASE}\n" --define "BUILD_NUMBER $(BUILD_NUMBER)" --specfile ./ovirt-node-iso.spec | head -n1)
+RELEASE=2
+RELEASE_TIME := $(shell date '+%Y%m%d%H%M%S')
 RECIPE_DIR = /usr/share/ovirt-node-recipe
 EXTRA_DIST = \
 	ovirt-node-iso.spec.in       \
 	ovirt-node-iso.spec          \
-	$(PACKAGE)-$(VERSION)-$(RELEASE).iso
+	$(PACKAGE)-$(VERSION)-$(RELEASE)-$(RELEASE_TIME).iso
 
 DISTCLEANFILES = $(PACKAGE)-$(VERSION).tar.gz \
 				 repos.ks \
@@ -534,7 +536,7 @@ publish: rpms
 	mkdir -p $(OVIRT_CACHE_DIR)
 	rsync -aq $(shell rpm --eval '%{_rpmdir}')/ $(OVIRT_CACHE_DIR)/ovirt/
 	rsync -aq $(shell rpm --eval '%{_srcrpmdir}')/ $(OVIRT_CACHE_DIR)/ovirt/src
-	rsync -aq $(PACKAGE_NAME)-$(VERSION)-$(RELEASE).iso $(OVIRT_CACHE_DIR)/ovirt/binary/
+	rsync -aq $(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(RELEASE_TIME).iso $(OVIRT_CACHE_DIR)/ovirt/binary/
 	createrepo $(OVIRT_CACHE_DIR)/ovirt
 
 $(PACKAGE).ks: version.ks
@@ -631,7 +633,8 @@ repos.ks: kickstarts
 		EPEL_REPO_LINE="repo --name=epel --cost=995 --baseurl=file:///data/mirrors/epel/6/x86_64/" ;\
 		OVIRT_STABLE_REPO_LINE="repo --cost=995 --name=ovirt-stable-repo --baseurl=file:///data/mirrors/oVirt/stable/rpm/EL/6.5/" ;\
 		GLUSTER_REPO_LINE="repo --name=gluster-3.4 --cost=995 --baseurl=file:///data/mirrors/gluster/3.4.0/CentOS/epel-6Server/x86_64/" ;\
-		echo "$${CENTOS_REPO_LINE}" > repos.ks ;\
+		echo "$${EAYUNOS_REPO_LINE}" > repos.ks;\
+		echo "$${CENTOS_REPO_LINE}" >> repos.ks ;\
 		echo "$${EPEL_REPO_LINE}" >> repos.ks ;\
 		echo "$${OVIRT_STABLE_REPO_LINE}" >> repos.ks ;\
 		echo "$${GLUSTER_REPO_LINE}" >> repos.ks ;\
@@ -648,10 +651,10 @@ version.ks: repos.ks
 	ksflatten -c $(NAME0).ks -o $(PACKAGE).ks
 
 $(PACKAGE).$(PKG_FMT) iso: kickstarts version.ks repos.ks
-	@test ! -e "$(PACKAGE_NAME)-$(VERSION)-$(RELEASE).iso" || ( echo "ERROR: $(PACKAGE_NAME)-$(VERSION)-$(RELEASE).iso already exists." && exit 1 )
+	@test ! -e "$(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(RELEASE_TIME).iso" || ( echo "ERROR: $(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(RELEASE_TIME).iso already exists." && exit 1 )
 	$(NODE_CREATOR) $(RECIPE)
 	@test -e "$(PACKAGE_NAME).iso" || ( echo "ERROR: ISO build failed." && exit 1 )
-	mv $(PACKAGE_NAME).iso $(PACKAGE_NAME)-$(VERSION)-$(RELEASE).iso
+	mv $(PACKAGE_NAME).iso $(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(RELEASE_TIME).iso
 
 verrel:
 	@echo ${PACKAGE_NAME}-${VERSION}-${RELEASE}
