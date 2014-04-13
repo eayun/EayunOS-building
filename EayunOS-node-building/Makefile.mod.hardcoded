@@ -85,7 +85,7 @@ CENTOS = 6
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"ovirt-node\" -DPACKAGE_TARNAME=\"ovirt-node\" -DPACKAGE_VERSION=\"3.0.4\" -DPACKAGE_STRING=\"ovirt-node\ 3.0.4\" -DPACKAGE_BUGREPORT=\"node-devel@ovirt.org\" -DPACKAGE=\"ovirt-node\" -DVERSION=\"3.0.4\"
 #DISTRO = centos6
-DISTRO = eayunos-node-3.3
+DISTRO = eayunos-node-4.0
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
@@ -108,9 +108,9 @@ PACKAGE_BUGREPORT = node-devel@ovirt.org
 #PACKAGE_TARNAME = ovirt-node
 #PACKAGE_VERSION = 3.0.4
 PACKAGE_NAME = eayunos-node-iso
-PACKAGE_STRING = eayunos-node 3.3
+PACKAGE_STRING = eayunos-node 4.0
 PACKAGE_TARNAME = eayunos-node
-PACKAGE_VERSION = 3.3
+PACKAGE_VERSION = 4.0
 PATH_SEPARATOR = :
 #PRODUCT_NAME = oVirt Node Hypervisor
 PRODUCT_NAME = EayunOS Node Hypervisor
@@ -120,7 +120,7 @@ SET_MAKE =
 SHELL = /bin/sh
 STRIP = 
 #VERSION = 3.0.4
-VERSION = 3.3
+VERSION = 4.0
 abs_builddir = /root/ovirt-node-building/upstream/ovirt-node-iso
 abs_srcdir = /root/ovirt-node-building/upstream/ovirt-node-iso
 abs_top_builddir = /root/ovirt-node-building/upstream/ovirt-node-iso
@@ -165,8 +165,8 @@ RECIPE = $(PACKAGE).ks
 PRODUCT = EayunOS Node Hypervisor
 PKG_FMT = iso
 ARCH = $(shell rpm --eval '%{_arch}')
-#RELEASE := $(shell rpm -q --qf "%{RELEASE}\n" --define "BUILD_NUMBER $(BUILD_NUMBER)" --specfile ./ovirt-node-iso.spec | head -n1)
-RELEASE=1
+RELEASE := $(shell rpm -q --qf "%{RELEASE}\n" --define "BUILD_NUMBER $(BUILD_NUMBER)" --specfile ./ovirt-node-iso.spec | head -n1)
+#RELEASE=1
 RECIPE_DIR = /usr/share/ovirt-node-recipe
 EXTRA_DIST = \
 	ovirt-node-iso.spec.in       \
@@ -626,10 +626,11 @@ repos.ks: kickstarts
     #  fi ;\
 	#)
 	( \
-		CENTOS_REPO_LINE="repo --name=centos --baseurl=file:///data/mirrors/CentOS/6.5/os/x86_64/" ;\
-		EPEL_REPO_LINE="repo --name=epel --baseurl=file:///data/mirrors/epel/6/x86_64/" ;\
-		OVIRT_STABLE_REPO_LINE="repo --name=ovirt-stable-repo --baseurl=file:///data/mirrors/oVirt/stable/rpm/EL/6.5/" ;\
-		GLUSTER_REPO_LINE="repo --name=gluster-3.4 --baseurl=file:///data/mirrors/gluster/3.4.0/CentOS/epel-6Server/x86_64/" ;\
+		EAYUNOS_REPO_LINE="repo --name=EayunOS --cost=990 --baseur=http://192.168.3.159/eayunVirt/rpms/oVirt/6/";\
+		CENTOS_REPO_LINE="repo --name=centos --cost=995 --baseurl=file:///data/mirrors/CentOS/6.5/os/x86_64/" ;\
+		EPEL_REPO_LINE="repo --name=epel --cost=995 --baseurl=file:///data/mirrors/epel/6/x86_64/" ;\
+		OVIRT_STABLE_REPO_LINE="repo --cost=995 --name=ovirt-stable-repo --baseurl=file:///data/mirrors/oVirt/stable/rpm/EL/6.5/" ;\
+		GLUSTER_REPO_LINE="repo --name=gluster-3.4 --cost=995 --baseurl=file:///data/mirrors/gluster/3.4.0/CentOS/epel-6Server/x86_64/" ;\
 		echo "$${CENTOS_REPO_LINE}" > repos.ks ;\
 		echo "$${EPEL_REPO_LINE}" >> repos.ks ;\
 		echo "$${OVIRT_STABLE_REPO_LINE}" >> repos.ks ;\
