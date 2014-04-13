@@ -1,0 +1,19 @@
+* 2014年04月13日，18时00分30秒，赵超，<chao.zhao@eayun.com>
+- EayunOS-Node光盘版本4.0-2-20140413180030。
+- 主要改动：
+- 1. 统一光盘镜像文件名和安装过程中使用的产品名称。
+- 2. 通过eayunos-release软件包提供/etc/system-release（解决安装和启动过程显示产
+-    品名称不正确的问题）和/etc/centos-release（解决otopi要求读取CentOS版本号的
+-    问题）。
+- 3. 修改ovirt-node软件包的spec文件，在安装该软件包时建立/etc/ovirt-node-eayunos-release
+-    文件（解决在Manager端修改Node网络配置无法固化保存的问题）。
+-
+- 其他说明：
+- 1. ISO的发布目录为：
+-    http://192.168.3.159/eayunVirt/ISO/EayunOS-Node
+-
+- 2. 该版本光盘，经过了简单测试：
+-    a）引导、安装、启动正常；
+-    b）显示的产品名称符合预期目标。
+- 
+- 3. 其他测试由于暂时没有协调物理服务器进行安装测试，后期集中测试时再进行验证。
