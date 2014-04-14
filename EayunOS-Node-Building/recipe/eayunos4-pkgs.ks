@@ -15,7 +15,7 @@ ovirt-node-selinux
 ovirt-node-plugin-snmp
 ovirt-node-plugin-cim
 ovirt-node-plugin-vdsm
-vdsm-python-cpopen
+python-cpopen
 redhat-logos
 -centos-release
 eayunos-release

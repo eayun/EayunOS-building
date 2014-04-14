@@ -64,7 +64,8 @@ cat $menu >> $LIVE_ROOT/isolinux/isolinux.cfg
 rm $menu
 # remove extra boot args add by updated livecd-tools
 sed -i -e 's/xdriver=vesa nomodeset//g' $LIVE_ROOT/isolinux/isolinux.cfg
-cp $INSTALL_ROOT/usr/share/ovirt-node/syslinux-vesa-splash.jpg $LIVE_ROOT/isolinux/splash.jpg
+#cp $INSTALL_ROOT/usr/share/ovirt-node/syslinux-vesa-splash.jpg $LIVE_ROOT/isolinux/splash.jpg
+cp $INSTALL_ROOT/usr/lib/anaconda-runtime/syslinux-vesa-splash.jpg $LIVE_ROOT/isolinux/splash.jpg
 
 # store image version info in the ISO and rootfs
 cat > $LIVE_ROOT/isolinux/version <<EOF

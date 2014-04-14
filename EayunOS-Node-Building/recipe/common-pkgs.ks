@@ -101,10 +101,10 @@ yum
 biosdevname
 fcoe-utils
 #glusterfs client packages
-glusterfs-3.4.0-8.el6
-glusterfs-devel-3.4.0-8.el6
-glusterfs-fuse-3.4.0-8.el6
-glusterfs-rdma-3.4.0-8.el6
+glusterfs
+glusterfs-devel
+glusterfs-fuse
+glusterfs-rdma
 
 NetworkManager-glib
 
