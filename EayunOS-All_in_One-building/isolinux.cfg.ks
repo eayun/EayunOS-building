@@ -19,15 +19,15 @@ label ks-all_in_one
   menu default
   menu label ^(Automatic) All in One Installation
   kernel vmlinuz
-  append initrd=initrd.img ks=cdrom:/ks/eayunOS-all_in_one.cfg
+  append initrd=initrd.img ks=cdrom:/ks/EayunOS-all_in_one.cfg
 label ks-management_only
   menu label ^(Automatic) Management_Only Installation
   kernel vmlinuz
-  append initrd=initrd.img ks=cdrom:/ks/eayunOS-management_only.cfg
+  append initrd=initrd.img ks=cdrom:/ks/EayunOS-management_only.cfg
 label ks-node_only
   menu label ^(Automatic) Node_Only Installation
   kernel vmlinuz
-  append initrd=initrd.img ks=cdrom:/ks/eayunOS-node_only.cfg
+  append initrd=initrd.img ks=cdrom:/ks/EayunOS-node_only.cfg
 label linux
   menu label ^Install or upgrade an existing system
   kernel vmlinuz

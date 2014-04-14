@@ -4,6 +4,8 @@
 - 2. simple.ovirt.brand升级至0.0.1-3。
 - 3. 统一光盘镜像文件名中使用的产品名称。
 - 4. 使用eayunos-release文件解决otopi对于CentOS版本的检测。
+- 5. 默认启动SELinux。
+- 6. 开机自动启动iptables服务。
 -
 - 其他说明：
 - 1. 该版本光盘经过简单测试：
