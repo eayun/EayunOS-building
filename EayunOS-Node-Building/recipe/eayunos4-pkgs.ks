@@ -1,6 +1,6 @@
 collectd-virt
 libguestfs-winsupport
-qemu-kvm
+#qemu-kvm
 # rhbz#641494 RFE - add libguestfs
 libguestfs-winsupport
 ltrace
@@ -19,3 +19,8 @@ python-cpopen
 redhat-logos
 -centos-release
 eayunos-release
+-qemu-kvm
+-qemu-kvm-tools
+qemu-kvm-rhev
+qemu-kvm-rhev-tools
+qemu-img-rhev

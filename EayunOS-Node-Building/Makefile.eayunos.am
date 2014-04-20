@@ -186,11 +186,13 @@ repos.ks: kickstarts
 	( \
 		EAYUNOS_REPO_LINE="repo --name=EayunOS --cost=990 --baseur=http://192.168.3.159/eayunVirt/rpms/oVirt/6/";\
 		CENTOS_REPO_LINE="repo --name=centos --cost=995 --baseurl=file:///data/mirrors/CentOS/6.5/os/x86_64/" ;\
+		CENTOS_UPDATES_REPO_LINE="repo --name=centos-updates --cost=995 --baseurl=file:///data/mirrors/CentOS/6.5/updates/x86_64/" ;\
 		EPEL_REPO_LINE="repo --name=epel --cost=995 --baseurl=file:///data/mirrors/epel/6/x86_64/" ;\
 		OVIRT_STABLE_REPO_LINE="repo --cost=995 --name=ovirt-stable-repo --baseurl=file:///data/mirrors/oVirt/stable/rpm/EL/6.5/" ;\
 		GLUSTER_REPO_LINE="repo --name=gluster-3.4 --cost=995 --baseurl=file:///data/mirrors/gluster/3.4.0/CentOS/epel-6Server/x86_64/" ;\
 		echo "$${EAYUNOS_REPO_LINE}" > repos.ks;\
 		echo "$${CENTOS_REPO_LINE}" >> repos.ks ;\
+		echo "$${CENTOS_UPDATES_REPO_LINE}" >> repos.ks ;\
 		echo "$${EPEL_REPO_LINE}" >> repos.ks ;\
 		echo "$${OVIRT_STABLE_REPO_LINE}" >> repos.ks ;\
 		echo "$${GLUSTER_REPO_LINE}" >> repos.ks ;\
@@ -210,7 +212,6 @@ $(PACKAGE).$(PKG_FMT) iso: kickstarts version.ks repos.ks
 	@test ! -e "$(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(RELEASE_TIME).iso" || ( echo "ERROR: $(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(RELEASE_TIME).iso already exists." && exit 1 )
 	$(NODE_CREATOR) $(RECIPE)
 	@test -e "$(PACKAGE_NAME).iso" || ( echo "ERROR: ISO build failed." && exit 1 )
-	mv $(PACKAGE_NAME).iso $(PACKAGE_NAME)-$(VERSION)-$(RELEASE).iso
 	mv $(PACKAGE_NAME).iso $(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(RELEASE_TIME).iso
 
 verrel:
