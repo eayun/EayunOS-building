@@ -34,12 +34,12 @@ AC_SUBST([BUILD_NUMBER])
 DISTRO=EayunOS-Node-4.0
 PACKAGE=EayunOS-Node-iso
 PACKAGE_NAME=EayunOS-Node-iso
-PACKAGE_STRING=EayunOS-Node 4.0
+PACKAGE_STRING="EayunOS-Node 4.0"
 PACKAGE_TARNAME=EayunOS-Node
 PACKAGE_VERSION=4.0
 PACKAGE_BUGREPORT=devel@eayunos.eayun.com
-PRODUCT=EayunOS Node Hypervisor
-PRODUCT_NAME=EayunOS Node Hypervisor
+PRODUCT="EayunOS Node Hypervisor"
+PRODUCT_NAME="EayunOS Node Hypervisor"
 MAIN_KS=ovirt-node-image.ks
 VERSION=4.0
 RELEASE=3
