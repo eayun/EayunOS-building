@@ -1,3 +1,16 @@
+* 2014年04月20日，21时28分31秒，赵超，<chao.zhao@eayun.com>
+- 主要改动：
+- 1. 将qemu相关软件包替换为开启了rhev特性的软件包。
+- 2. 创建virt-viewer-win软件包，在manager的web界面提供Windows版本virt-viewer客户端的
+-    下载。
+- 3. 创建virtio-win软件包，为使用v2v工具转换Windows虚拟机提供驱动。
+-
+- 其他说明：
+- 1. 该版本光盘经过简单测试：
+- a）引导、安装、启动正常。
+- b）engine-setup安装正常。
+- c）mangager界面访问正常，可以完成手动添加主机以及批准自动注册的主机。
+-
 * 2014年04月14日，14时27分48秒，赵超，<chao.zhao@eayun.com>
 - 主要改动：
 - 1. ovirt-engine升级至3.3.5-1。
