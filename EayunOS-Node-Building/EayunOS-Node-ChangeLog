@@ -1,3 +1,16 @@
+* 2014年04月21日，11时42分26秒，赵超，<chao.zhao@eayun.com>
+- 主要改动：
+- 1. 生成新的ovirt-node-plugin-vdsm的软件包，将显示界面的“Ovirt Engine”替换为
+-    ”EayunOS Manager“。
+- 
+- 其他说明：
+- 1. 本版本由于手动修改了ovirt-node-plugin-vdsm的一行代码，暂时作为可选版本供大
+-     家选择。
+- 2. 本版本也经过了基本的测试：
+-    a）引导、安装、启动正常；
+-    b）安装完成之后，可以通过node端注册和manager端主动添加2种方式添加为数据中心
+-       的主机。
+
 * 2014年04月20日，19时26分09秒，赵超，<chao.zhao@eayun.com>
 - 主要改动：
 - 1. 将qemu相关软件包替换为开启了rhev特性的软件包。
