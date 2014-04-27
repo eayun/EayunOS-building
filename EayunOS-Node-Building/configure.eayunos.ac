@@ -42,7 +42,7 @@ PRODUCT="EayunOS Node Hypervisor"
 PRODUCT_NAME="EayunOS Node Hypervisor"
 MAIN_KS=ovirt-node-image.ks
 VERSION=4.0
-RELEASE=3
+RELEASE=4
 
 AC_SUBST([DISTRO])
 AC_SUBST([PACKAGE])
