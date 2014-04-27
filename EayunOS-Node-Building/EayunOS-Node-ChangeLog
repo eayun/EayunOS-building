@@ -1,4 +1,5 @@
 * 2014年04月27日，22时42分56秒，赵超，<chao.zhao@eayun.com>
+- EayunOS-Node 4.0-4发布。
 - 主要改动：
 - 1. vdsm更新至4.13.4-3，同时对vdsm/caps.py和vdsm/clientIF.py做了修改，在OSName
 -    类中增加了EAYUNOS和EAYUNOSNODE2个系统版本信息。
