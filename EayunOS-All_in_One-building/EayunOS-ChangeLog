@@ -6,7 +6,7 @@
 - 2. ovirt-engine更新至3.3.5-2.el6，变更如下：
 -    a）spec文件中更新DISPLAY_VERSION，在web门户中的“关于”中显示EayunOS版本信
 -       息。
--    TO BE COMPLETED BY panly
+-    b) 修复 Guide Me 弹出框一直等待的问题: https://bugzilla.redhat.com/1091604
 - 3. 软件包变更：
 -    a）版本更新
 -       java-1.7.0-openjdk.i686
