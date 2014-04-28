@@ -1,10 +1,10 @@
 #!/bin/ash
 
 OVIRT_ALLINONE_BASE=/root/ovirt-all.in.one-building
-PRODUCT_NAME=eayunOS
+PRODUCT_NAME=EayunOS
 VERSION=4.0
-RELEASE=2
-ISO_DATA_PATH=eayunOS-iso
+RELEASE=4
+ISO_DATA_PATH=EayunOS-iso
 
 PUBLISHER=zhaochao1984@gmail.com
 DATESTRING=`date '+%Y%m%d%H%M%S'`
