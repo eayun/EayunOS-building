@@ -19,6 +19,9 @@ python-cpopen
 redhat-logos
 -centos-release
 eayunos-release
+python-crypto2.6
+eayunos-lic
+ovirt-node-plugin-eayunos
 -qemu-kvm
 -qemu-kvm-tools
 qemu-kvm-rhev
