@@ -1,0 +1,3 @@
+[submodule "packaging/livecd/upstream"]
+	path = packaging/livecd/upstream
+	url = https://git.fedorahosted.org/git/livecd
