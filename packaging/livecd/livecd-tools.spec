@@ -5,7 +5,7 @@
 Summary: Tools for building live CDs
 Name: livecd-tools
 Version: 20.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 1
 License: GPLv2
 Group: System Environment/Base
@@ -105,6 +105,12 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/imgcreate/*.pyc
 
 %changelog
+* Mon Nov 17 2014 Zhao Chao <chao.zhao@eayun.com> 20.6-2
+- Fix changelog of SPEC file.
+
+* Mon Nov 17 2014 Zhao Chao <chao.zhao@eayun.com> 20.6-1
+- Version 20.6
+
 * Wed Mar 26 2014 Brian C. Lane <bcl@redhat.com> 20.5-1
 - Version 20.5 (bcl)
 - Cleanup paths in README (bcl)
