@@ -1,3 +1,6 @@
 [submodule "packaging/livecd/upstream"]
 	path = packaging/livecd/upstream
 	url = https://git.fedorahosted.org/git/livecd
+[submodule "packaging/ovirt-node/upstream"]
+	path = packaging/ovirt-node/upstream
+	url = https://github.com/oVirt/ovirt-node.git
