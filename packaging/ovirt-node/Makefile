@@ -1,6 +1,6 @@
-repo = livecd
-package = livecd-tools
-version = 20.6
+repo = ovirt-node
+package = ovirt-node
+version = 3.1.0_master
 
 sources:
 	cd ../../ ;\
@@ -19,4 +19,6 @@ sources:
 		fi; \
 	done; \
 	cd upstream; \
-	git archive --format=tar --prefix=$(package)-$(version)/ HEAD | bzip2 -9v > ../$(package)-$(version).tar.bz2
+	./autogen.sh; \
+	make dist; \
+	cp $(repo).spec $(repo)-$(version).tar.gz ../
