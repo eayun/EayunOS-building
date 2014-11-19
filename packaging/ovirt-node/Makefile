@@ -21,4 +21,4 @@ sources:
 	cd upstream; \
 	./autogen.sh; \
 	make dist; \
-	cp $(repo).spec $(repo)-$(version).tar.gz ../
+	cp $(repo)-$(version).tar.gz ../
