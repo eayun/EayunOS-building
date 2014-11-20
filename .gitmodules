@@ -10,3 +10,6 @@
 [submodule "packaging/ovirt-node-plugin-vdsm/upstream"]
 	path = packaging/ovirt-node-plugin-vdsm/upstream
 	url = https://github.com/oVirt/ovirt-node-plugin-vdsm.git
+[submodule "iso-building/ovirt-node-iso"]
+	path = iso-building/ovirt-node-iso
+	url = https://github.com/oVirt/ovirt-node-iso.git
