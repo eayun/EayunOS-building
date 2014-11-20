@@ -7,3 +7,6 @@
 [submodule "packaging/ovirt-node-plugin-hosted-engine/upstream"]
 	path = packaging/ovirt-node-plugin-hosted-engine/upstream
 	url = https://github.com/oVirt/ovirt-node-plugin-hosted-engine.git
+[submodule "packaging/ovirt-node-plugin-vdsm/upstream"]
+	path = packaging/ovirt-node-plugin-vdsm/upstream
+	url = https://github.com/oVirt/ovirt-node-plugin-vdsm.git
