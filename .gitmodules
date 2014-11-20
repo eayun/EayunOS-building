@@ -4,3 +4,6 @@
 [submodule "packaging/ovirt-node/upstream"]
 	path = packaging/ovirt-node/upstream
 	url = https://github.com/oVirt/ovirt-node.git
+[submodule "packaging/ovirt-node-plugin-hosted-engine/upstream"]
+	path = packaging/ovirt-node-plugin-hosted-engine/upstream
+	url = https://github.com/oVirt/ovirt-node-plugin-hosted-engine.git
