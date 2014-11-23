@@ -27,7 +27,7 @@ RHEL              = @RHEL@
 DISTRO            = @DISTRO@
 BUILD_TYPE        ?= STABLE
 CENTOS            = @CENTOS@
-RELEASE 		  := testing-1
+RELEASE 		  := alpha-1
 BUILD_NUMBER      = @BUILD_NUMBER@
 RECIPE_DIR 		  = @RECIPES@
 
@@ -52,6 +52,8 @@ OVIRT_URL           = $(MIRRORS_BASE_URL)/ovirt/3.5/EL7/
 
 GLUSTER_NOARCH_URL  = $(MIRRORS_BASE_URL)/gluster/3.5.2/epel-7/noarch/
 GLUSTER_X86_64_URL  = $(MIRRORS_BASE_URL)/gluster/3.5.2/epel-7/x86_64/
+
+ISO_DEST_DIR        = /data/testing/EayunOS
 
 
 $(PACKAGE).ks: version.ks
@@ -100,7 +102,9 @@ $(PACKAGE).$(PKG_FMT) iso: kickstarts version.ks repos.ks
 	@test ! -e "$(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(BUILD_NUMBER).iso" || ( echo "ERROR: $(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(BUILD_NUMBER).iso already exists." && exit 1 )
 	$(NODE_CREATOR) $(RECIPE)
 	@test -e "$(PACKAGE_NAME).iso" || ( echo "ERROR: ISO build failed." && exit 1 )
-	mv $(PACKAGE_NAME).iso $(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(BUILD_NUMBER).iso
+    sha512sum $(PACKAGE_NAME).iso > $(PACKAGE_NAME).iso.sha512sum.txt
+    mv $(PACKAGE_NAME).iso $(ISO_DEST_DIR)/$(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(BUILD_NUMBER).iso
+    mv $(PACKAGE_NAME).iso.sha512sum.txt $(ISO_DEST_DIR)/$(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(BUILD_NUMBER).iso.sha512sum.txt
 
 verrel:
 	@echo ${PACKAGE_NAME}-${VERSION}-${RELEASE}
