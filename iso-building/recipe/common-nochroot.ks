@@ -1,7 +1,7 @@
 
 %include version.ks
 mkdir -p $INSTALL_ROOT/usr/share/EayunOS-Engine-Appliance
-LATEST_APPLIANCE=`ls -tr /data/testing/EayunOS/EayunOS-Engine-Appliance-* | tail -n 1`
+LATEST_APPLIANCE=`ls -tr /data/testing/EayunOS/EayunOS-Engine-Appliance-*.ova.gz | tail -n 1`
 cp -v $LATEST_APPLIANCE $INSTALL_ROOT/usr/share/EayunOS-Engine-Appliance
 
 if [ -f "ovirt-authorized_keys" ]; then
