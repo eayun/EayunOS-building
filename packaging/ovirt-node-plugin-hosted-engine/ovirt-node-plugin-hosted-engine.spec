@@ -55,6 +55,7 @@ make install DESTDIR=%{buildroot}
 
 
 %files
+%{_sysconfdir}/rwtab.d/hosted-engine
 %{python_sitelib}/ovirt/node/setup/hostedengine
 #%{_sysconfdir}/ovirt-plugins.d
 
