@@ -29,7 +29,7 @@
 Summary:        oVirt Hosted Engine setup tool
 Name:           ovirt-hosted-engine-setup
 Version:        1.2.2
-Release:        1%{?dist_eayunos}
+Release:        2%{?dist_eayunos}
 License:        LGPLv2+
 URL:            http://www.ovirt.org
 Source:         http://resources.ovirt.org/pub/ovirt-3.5-snapshot/src/%{name}/%{name}-%{package_version}.tar.gz
@@ -104,6 +104,9 @@ make %{?_smp_mflags} install DESTDIR="%{buildroot}"
 %{vdsmhooksdir}/before_vm_start/
 
 %changelog
+* Tue Nov 25 2014 Zhao Chao <chao.zhao@eayun.com> - 1.2.2-2.eayunos.4.1
+- core/remote_answerfile: don't check CONFIG_FILE_APPEND.
+
 * Tue Nov 25 2014 Zhao Chao <chao.zhao@eayun.com> - 1.2.2-1.eayunos.4.1
 - use origin/ovirt-hosted-engine-setup-1.2 branch, commit id:
   c85743bfb0a51346112c8ee18e0b5e3581988ce5.
