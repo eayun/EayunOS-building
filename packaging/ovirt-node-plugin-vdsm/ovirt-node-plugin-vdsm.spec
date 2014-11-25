@@ -1,9 +1,10 @@
 %define is_f19 %(test "0%{?fedora}" -eq "019" && echo 1 || echo 0)
+%define dist_eayunos .eayunos.4.1
 
 Summary:        A plugin to make oVirt Node installs compatible with oVirt Engine and vdsm
 Name:           ovirt-node-plugin-vdsm
 Version:        0.2.2
-Release:        2%{?BUILD_NUMBER}%{?extra_release}%{?dist}
+Release:        3%{?dist_eayunos}
 Source0:        %{name}-0.2.2_ovirt35.tar.gz
 License:        GPLv2+
 Group:          Applications/System
@@ -82,6 +83,9 @@ EOF_sysctl
 %{_sysconfdir}/default/version.ovirt-node-plugin-vdsm
 
 %changelog
+* Tue Nov 25 2014 Zhao Chao <chao.zhao@eayun.com> - 0.2.2-3.eayunos.4.1
+- update to e138d9cb7e3a15b1636b469218deeeb6358c47d2.
+
 * Fri Nov 07 2014 Fabian Deutsch <fabiand@redhat.com> - 0.4.3
 - Explicitly start vdsmd again rhbz#1156369
 
