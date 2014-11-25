@@ -104,7 +104,7 @@ $(PACKAGE).$(PKG_FMT) iso: kickstarts version.ks repos.ks
 	@test -e "$(PACKAGE_NAME).iso" || ( echo "ERROR: ISO build failed." && exit 1 )
 	mv $(PACKAGE_NAME).iso $(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(BUILD_NUMBER).iso
 	sha512sum $(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(BUILD_NUMBER).iso > $(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(BUILD_NUMBER).iso.sha512sum.txt
-	mv $(PACKAGE_NAME).iso* $(ISO_DEST_DIR)/
+	mv $(PACKAGE_NAME)-$(VERSION)-$(RELEASE)-$(BUILD_NUMBER).iso* $(ISO_DEST_DIR)/
 
 verrel:
 	@echo ${PACKAGE_NAME}-${VERSION}-${RELEASE}
