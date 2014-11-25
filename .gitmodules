@@ -13,3 +13,6 @@
 [submodule "iso-building/ovirt-node-iso"]
 	path = iso-building/ovirt-node-iso
 	url = https://github.com/oVirt/ovirt-node-iso.git
+[submodule "packaging/ovirt-hosted-engine-setup/upstream"]
+	path = packaging/ovirt-hosted-engine-setup/upstream
+	url = https://github.com/oVirt/ovirt-hosted-engine-setup.git
