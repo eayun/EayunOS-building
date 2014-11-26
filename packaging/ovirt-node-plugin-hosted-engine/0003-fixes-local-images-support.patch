@@ -1,0 +1,45 @@
+From 22b23e01d25f464f14158840e6a476148b7057dd Mon Sep 17 00:00:00 2001
+From: Zhao Chao <zhaochao1984@gmail.com>
+Date: Wed, 26 Nov 2014 15:28:35 +0800
+Subject: [PATCH] fixes local images support.
+
+Signed-off-by: Zhao Chao <zhaochao1984@gmail.com>
+---
+ src/hosted_engine_page.py | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/src/hosted_engine_page.py b/src/hosted_engine_page.py
+index 1a64c38..dec062f 100644
+--- a/src/hosted_engine_page.py
++++ b/src/hosted_engine_page.py
+@@ -181,6 +181,8 @@ class Plugin(plugins.NodePlugin):
+             pxe = effective_model["hosted_engine.pxe"]
+             if not os.path.exists(HOSTED_ENGINE_SETUP_DIR):
+                 os.makedirs(HOSTED_ENGINE_SETUP_DIR)
++            if not os.path.exists(HOSTED_ENGINE_SETUP_TEMPDIR):
++                os.makedirs(HOSTED_ENGINE_SETUP_TEMPDIR)
+             localpath = os.path.join(HOSTED_ENGINE_SETUP_DIR,
+                                      os.path.basename(imagepath))
+             temp_fd, self.temp_cfg_file = tempfile.mkstemp()
+@@ -193,12 +195,15 @@ class Plugin(plugins.NodePlugin):
+                 return self.ui_content()
+ 
+             path_parsed = urlparse(imagepath)
+-            if not path_parsed.scheme:
++            if not path_parsed.scheme and not imagepath.startswith("/"):
+                 self._model['display_message'] = "\nCouldn't parse URL. " +\
+                                                  "please check it manually."
+                 self.show_dialog()
+-            elif os.path.exists(localpath):
+-                hosted_cfg = get_hosted_cfg(os.path.basename(imagepath), pxe)
++            elif os.path.exists(imagepath) or os.path.exists(localpath):
++                if os.path.exists(imagepath):
++                    hosted_cfg = get_hosted_cfg(imagepath, pxe)
++                else:
++                    hosted_cfg = get_hosted_cfg(os.path.basename(imagepath), pxe)
+                 with open(self.temp_cfg_file, "w") as f:
+                     f.write(hosted_cfg)
+                 self.logger.info(self.temp_cfg_file)
+-- 
+2.1.3
+
