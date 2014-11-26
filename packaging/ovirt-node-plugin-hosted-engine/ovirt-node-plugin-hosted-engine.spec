@@ -8,7 +8,7 @@
 
 Name:           ovirt-node-plugin-hosted-engine
 Version:        0.2.0
-Release:        2%{?dist_eayunos}
+Release:        3%{?dist_eayunos}
 Source0:        http://plain.resources.ovirt.org/pub/ovirt-master-snapshot/src/%{name}/%{name}-%{package_version}.tar.gz
 License:        GPLv2+
 Group:          Applications/System
@@ -63,6 +63,9 @@ make install DESTDIR=%{buildroot}
 %{recipe_root}
 
 %changelog
+* Tue Nov 26 2014 Zhao Chao <chao.zhao@eayun.com> 0.2.0-3.eayunos.4.1
+- fixes local images support.
+
 * Tue Nov 26 2014 Zhao Chao <chao.zhao@eayun.com> 0.2.0-2.eayunos.4.1
 - rwtab: Add /var/lib/ovirt-hosted-engine-ha.
 - add support for local images.
