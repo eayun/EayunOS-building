@@ -29,7 +29,7 @@
 Summary:        oVirt Hosted Engine setup tool
 Name:           ovirt-hosted-engine-setup
 Version:        1.2.2
-Release:        2%{?dist_eayunos}
+Release:        3%{?dist_eayunos}
 License:        LGPLv2+
 URL:            http://www.ovirt.org
 Source:         http://resources.ovirt.org/pub/ovirt-3.5-snapshot/src/%{name}/%{name}-%{package_version}.tar.gz
@@ -104,6 +104,11 @@ make %{?_smp_mflags} install DESTDIR="%{buildroot}"
 %{vdsmhooksdir}/before_vm_start/
 
 %changelog
+* Tue Nov 27 2014 Zhao Chao <chao.zhao@eayun.com> - 1.2.2-2.eayunos.4.1
+- avoid host name collision, reapply commmit
+  1f55418e60e667c9da04b8dd21e678fb634a8813. this is a regression bug,
+  introduced by commit a294fdfc7a410aadb6fd1c72594989e2f3ef1a26.
+
 * Tue Nov 25 2014 Zhao Chao <chao.zhao@eayun.com> - 1.2.2-2.eayunos.4.1
 - core/remote_answerfile: don't check CONFIG_FILE_APPEND.
 
