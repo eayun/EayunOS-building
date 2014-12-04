@@ -19,6 +19,9 @@ sources:
 		fi; \
 	done; \
 	cd upstream; \
+	sed -i '/^AX_PYTHON_MODULE.*fatal/d'  configure.ac; \
+	sed -i '/AC_MSG_ERROR.*python-devel/s/AC_MSG_ERROR/AC_MSG_WARN/'  configure.ac; \
+	sed -i '/AC_MSG_ERROR.*python-nose/s/AC_MSG_ERROR/AC_MSG_WARN/'  configure.ac; \
 	./autogen.sh; \
 	make dist; \
 	cp $(repo).spec ../; \
