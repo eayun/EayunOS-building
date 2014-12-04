@@ -16,3 +16,6 @@
 [submodule "packaging/ovirt-hosted-engine-setup/upstream"]
 	path = packaging/ovirt-hosted-engine-setup/upstream
 	url = https://github.com/oVirt/ovirt-hosted-engine-setup.git
+[submodule "vdsm"]
+	path = packaging/vdsm/upstream
+	url = https://github.com/oVirt/vdsm.git
