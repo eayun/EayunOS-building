@@ -50,8 +50,8 @@ EPEL_URL            = $(MIRRORS_BASE_URL)/epel/7/x86_64/
 
 OVIRT_URL           = $(MIRRORS_BASE_URL)/ovirt/3.5/EL7/
 
-GLUSTER_NOARCH_URL  = $(MIRRORS_BASE_URL)/gluster/3.5.2/epel-7/noarch/
-GLUSTER_X86_64_URL  = $(MIRRORS_BASE_URL)/gluster/3.5.2/epel-7/x86_64/
+GLUSTER_NOARCH_URL  = $(MIRRORS_BASE_URL)/gluster/3.5/LATEST/epel-7/noarch/
+GLUSTER_X86_64_URL  = $(MIRRORS_BASE_URL)/gluster/3.5/LATEST/epel-7/x86_64/
 
 ISO_DEST_DIR        = /data/testing/EayunOS
 
