@@ -135,16 +135,16 @@ def download(release_num):
             if not ret:
                 os.unlink(local_path)
             else:
-                print "Checking footprint of %s" % local_path
+                print "Checking footprint of %s" % relative_url
                 saved_dir = os.getcwd()
                 os.chdir(DEST_DIR)
                 status = commands.getstatusoutput('md5sum -c %s' % local_footprint)[0]
                 if status == 0:
-                    print "The downloaded %s seems fine." % local_path
+                    print "The downloaded %s seems fine." % relative_url
                     os.chdir(saved_dir)
                     return "Done"
                 else:
-                    print "The downloaded %s does not match the md5sum!" % local_path
+                    print "The downloaded %s does not match the md5sum!" % relative_url
                     os.unlink(local_footprint)
                     os.unlink(local_path)
                     os.chdir(saved_dir)
