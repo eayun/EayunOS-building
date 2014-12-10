@@ -2,13 +2,13 @@
 %define recipe_root %{_datadir}/ovirt-node-recipe
 %define dist_eayunos .eayunos.4.1
 
-%global         package_version 0.2.0_ovirt35
+%global         package_version 0.2.1_ovirt35
 %global         package_name ovirt-node-plugin-hosted-engine
 
 
 Name:           ovirt-node-plugin-hosted-engine
-Version:        0.2.0
-Release:        3%{?dist_eayunos}
+Version:        0.2.1
+Release:        1%{?dist_eayunos}
 Source0:        http://plain.resources.ovirt.org/pub/ovirt-master-snapshot/src/%{name}/%{name}-%{package_version}.tar.gz
 License:        GPLv2+
 Group:          Applications/System
@@ -63,6 +63,11 @@ make install DESTDIR=%{buildroot}
 %{recipe_root}
 
 %changelog
+* Thu Dec 10 2014 Zhao Chao <chao.zhao@eayun.com> 0.2.1-1.eayunos.4.1
+- merge upstream commits, update to 
+  806278ea0fdfe331c60cdeb345f1ac0f77f3d6b4.
+- recreate patch for EayunOS Engine Appliance support.
+
 * Tue Nov 26 2014 Zhao Chao <chao.zhao@eayun.com> 0.2.0-3.eayunos.4.1
 - fixes local images support.
 

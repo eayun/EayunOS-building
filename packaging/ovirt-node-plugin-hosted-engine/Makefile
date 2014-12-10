@@ -1,6 +1,6 @@
 repo = ovirt-node-plugin-hosted-engine
 package = ovirt-node-plugin-hosted-engine
-version = 0.2.0_ovirt35
+version = 0.2.1_ovirt35
 
 sources:
 	cd ../../ ;\
