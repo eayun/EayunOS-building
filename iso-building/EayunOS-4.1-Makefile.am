@@ -27,7 +27,7 @@ RHEL              = @RHEL@
 DISTRO            = @DISTRO@
 BUILD_TYPE        ?= STABLE
 CENTOS            = @CENTOS@
-RELEASE 		  := beta-1
+RELEASE 		  := rc-1
 BUILD_NUMBER      = @BUILD_NUMBER@
 RECIPE_DIR 		  = @RECIPES@
 
