@@ -1,0 +1,81 @@
+From ac6d10ef6af50cc24d65cd81ef751c3b710b51f0 Mon Sep 17 00:00:00 2001
+From: Zhao Chao <zhaochao1984@gmail.com>
+Date: Mon, 15 Dec 2014 19:00:10 +0800
+Subject: [PATCH] add a new OSName in vdsm/caps.py for EayunOS.
+
+Signed-off-by: Zhao Chao <zhaochao1984@gmail.com>
+---
+ vdsm.spec.in                 | 3 +++
+ vdsm/caps.py                 | 7 +++++--
+ vdsm/rpc/vdsmapi-schema.json | 2 +-
+ 3 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/vdsm.spec.in b/vdsm.spec.in
+index 4b98574..af60bf8 100644
+--- a/vdsm.spec.in
++++ b/vdsm.spec.in
+@@ -1540,6 +1540,9 @@ exit 0
+ %endif
+ 
+ %changelog
++* Mon Dec 15 2014 zhaochao <chao.zhao@eayun.com> - 4.16.7-5
++- add a new OSName for EayunOS in vdsm/caps.
++
+ * Mon Dec 15 2014 zhaochao <chao.zhao@eayun.com> - 4.16.7-4
+ - add with_hooks to SPEC.
+ 
+diff --git a/vdsm/caps.py b/vdsm/caps.py
+index 2016a6a..6fb8115 100644
+--- a/vdsm/caps.py
++++ b/vdsm/caps.py
+@@ -67,6 +67,7 @@ class OSName:
+     RHEVH = 'RHEV Hypervisor'
+     DEBIAN = 'Debian'
+     POWERKVM = 'PowerKVM'
++    EAYUNOS = 'EayunOS Hypervisor'
+ 
+ 
+ class AutoNumaBalancingStatus:
+@@ -487,6 +488,8 @@ def _getKdumpStatus():
+ 
+ @utils.memoized
+ def getos():
++    if os.path.exists('/etc/EayunOS-release'):
++        return OSName.EAYUNOS
+     if os.path.exists('/etc/rhev-hypervisor-release'):
+         return OSName.RHEVH
+     elif glob.glob('/etc/ovirt-node-*-release'):
+@@ -509,7 +512,7 @@ def osversion():
+ 
+     osname = getos()
+     try:
+-        if osname == OSName.RHEVH or osname == OSName.OVIRT:
++        if osname == OSName.RHEVH or osname == OSName.OVIRT or osname == OSName.EAYUNOS:
+             d = _parseKeyVal(file('/etc/default/version'))
+             version = d.get('VERSION', '')
+             release = d.get('RELEASE', '')
+@@ -704,7 +707,7 @@ def _getKeyPackages():
+ 
+     pkgs = {'kernel': kernelDict()}
+ 
+-    if getos() in (OSName.RHEVH, OSName.OVIRT, OSName.FEDORA, OSName.RHEL):
++    if getos() in (OSName.RHEVH, OSName.OVIRT, OSName.FEDORA, OSName.RHEL, OSName.EAYUNOS):
+         KEY_PACKAGES = {'qemu-kvm': ('qemu-kvm', 'qemu-kvm-rhev'),
+                         'qemu-img': ('qemu-img', 'qemu-img-rhev'),
+                         'vdsm': ('vdsm',),
+diff --git a/vdsm/rpc/vdsmapi-schema.json b/vdsm/rpc/vdsmapi-schema.json
+index 8ea8767..6ef86ee 100644
+--- a/vdsm/rpc/vdsmapi-schema.json
++++ b/vdsm/rpc/vdsmapi-schema.json
+@@ -845,7 +845,7 @@
+ ##
+ {'enum': 'OSName',
+  'data': ['unknown', 'oVirt Node', 'RHEL', 'Fedora', 'RHEV Hypervisor',
+-          'Debian']}
++          'Debian', 'EayunOS Hypervisor' ]}
+ 
+ ##
+ # @OsVersion:
+-- 
+2.1.3
+
