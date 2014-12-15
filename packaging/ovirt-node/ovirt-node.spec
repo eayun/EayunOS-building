@@ -21,13 +21,15 @@
 # RHN Plugin is only build on RHEL
 %define with_rhn 0%{?rhel}
 
+%define dist_eayunos .eayunos.4.1
+
 %global         package_version 3.1.0_master
 %global         package_name ovirt-node-image
 
 Summary:        The %{product_family} daemons/scripts
 Name:           ovirt-node
 Version:        3.1.0
-Release:        0.0.master%{?release_suffix}%{?dist}
+Release:        1%{?dist_eayunos}
 Source0:        http://plain.resources.ovirt.org/pub/ovirt-master-snapshot/src/%{name}/%{name}-%{package_version}.tar.gz
 License:        GPLv2+
 Group:          Applications/System
@@ -843,6 +845,9 @@ fi
 
 
 %changelog
+* Mon Dec 15 2014 Zhao Chao <chao.zhao@eayun.com> 3.1.0-1-eayunos.4.1
+- setup/core/remote_storage_page: replace Red Hat with Eayun.
+
 * Mon Jun 20 2011 Alan Pevec <apevec@redhat.com> 2.0.0-1
 - split kickstarts per distro, currently ovirt15 and rhevh6
 - new installation and configuration text UI for standalone mode
