@@ -1,4 +1,4 @@
-From ac6d10ef6af50cc24d65cd81ef751c3b710b51f0 Mon Sep 17 00:00:00 2001
+From 680e7f4e6d989cef79e99dbc2cbc49b9a0560933 Mon Sep 17 00:00:00 2001
 From: Zhao Chao <zhaochao1984@gmail.com>
 Date: Mon, 15 Dec 2014 19:00:10 +0800
 Subject: [PATCH] add a new OSName in vdsm/caps.py for EayunOS.
@@ -7,8 +7,8 @@ Signed-off-by: Zhao Chao <zhaochao1984@gmail.com>
 ---
  vdsm.spec.in                 | 3 +++
  vdsm/caps.py                 | 7 +++++--
- vdsm/rpc/vdsmapi-schema.json | 2 +-
- 3 files changed, 9 insertions(+), 3 deletions(-)
+ vdsm/rpc/vdsmapi-schema.json | 4 +++-
+ 3 files changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/vdsm.spec.in b/vdsm.spec.in
 index 4b98574..af60bf8 100644
@@ -64,10 +64,17 @@ index 2016a6a..6fb8115 100644
                          'qemu-img': ('qemu-img', 'qemu-img-rhev'),
                          'vdsm': ('vdsm',),
 diff --git a/vdsm/rpc/vdsmapi-schema.json b/vdsm/rpc/vdsmapi-schema.json
-index 8ea8767..6ef86ee 100644
+index 8ea8767..9c07ad3 100644
 --- a/vdsm/rpc/vdsmapi-schema.json
 +++ b/vdsm/rpc/vdsmapi-schema.json
-@@ -845,7 +845,7 @@
+@@ -840,12 +840,14 @@
+ #
+ # @Debian:           A Debian-based distribution (including Ubuntu)
+ #
++# @EayunOS Hypervisor:  EayunOS hypervisor
++#
+ # Since: 4.10.0
+ # XXX: Extension: Spaces in enum values
  ##
  {'enum': 'OSName',
   'data': ['unknown', 'oVirt Node', 'RHEL', 'Fedora', 'RHEV Hypervisor',
