@@ -123,6 +123,9 @@ EOF_rwtab_ovirt
 # fix iSCSI/LVM startup issue
 sed -i 's/node\.session\.initial_login_retry_max.*/node.session.initial_login_retry_max = 60/' /etc/iscsi/iscsid.conf
 
+# replace Red Hat with Eayun in initiatorname.iscsi
+sed -i 's/1994-05\.com\.redhat/2011-06\.com\.eayun/' /etc/iscsi/initiatorname.iscsi
+
 #lvm.conf should use /dev/mapper and /dev/sdX devices
 # and not /dev/dm-X devices
 sed -i 's/preferred_names = \[ "^\/dev\/mpath\/", "^\/dev\/mapper\/mpath", "^\/dev\/\[hs\]d" \]/preferred_names = \[ "^\/dev\/mapper", "^\/dev\/\[hsv\]d" \]/g' /etc/lvm/lvm.conf
