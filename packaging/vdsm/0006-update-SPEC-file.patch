@@ -16,7 +16,7 @@ index dd15564..e35aee6 100644
  %endif
  
  %changelog
-+* Mon Dec 20 2014 zhaochao <chao.zhao@eayun.com> - 4.16.7-8
++* Sat Dec 20 2014 zhaochao <chao.zhao@eayun.com> - 4.16.7-8
 +- merge upstream patch for fix image device seliunx labels
 +  using chown not udev.
 +- change default mgmt bridge name to eayunosmgmt.
