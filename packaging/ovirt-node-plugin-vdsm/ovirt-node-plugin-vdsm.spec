@@ -4,7 +4,7 @@
 Summary:        A plugin to make oVirt Node installs compatible with oVirt Engine and vdsm
 Name:           ovirt-node-plugin-vdsm
 Version:        0.2.2
-Release:        4%{?dist_eayunos}
+Release:        5%{?dist_eayunos}
 Source0:        %{name}-0.2.2_ovirt35.tar.gz
 License:        GPLv2+
 Group:          Applications/System
@@ -83,6 +83,11 @@ EOF_sysctl
 %{_sysconfdir}/default/version.ovirt-node-plugin-vdsm
 
 %changelog
+* Sat Dec 20 2014 Zhao Chao <chao.zhao@eayun.com> - 0.2.2-5.eayunos.4.1
+- add eayunosmgmt as a default bridge name.
+- fix default values for Entries in UI.
+- add the first i18n modification.
+
 * Tue Dec 15 2014 Zhao Chao <chao.zhao@eayun.com> - 0.2.2-4.eayunos.4.1
 - replace engine name as 'EayunOS Manager'.
 
