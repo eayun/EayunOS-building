@@ -33,7 +33,6 @@ vdsm-hook-checkimages
 vdsm-hook-directlun
 vdsm-hook-ethtool-options
 vdsm-hook-extnet
-vdsm-hook-fakevmstats
 vdsm-hook-faqemu
 vdsm-hook-fileinject
 vdsm-hook-floppy
