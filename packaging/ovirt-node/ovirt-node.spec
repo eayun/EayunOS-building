@@ -29,7 +29,7 @@
 Summary:        The %{product_family} daemons/scripts
 Name:           ovirt-node
 Version:        3.1.0
-Release:        1%{?dist_eayunos}
+Release:        2%{?dist_eayunos}
 Source0:        http://plain.resources.ovirt.org/pub/ovirt-master-snapshot/src/%{name}/%{name}-%{package_version}.tar.gz
 License:        GPLv2+
 Group:          Applications/System
@@ -48,12 +48,12 @@ Requires(preun): /sbin/chkconfig
 Requires:       systemd-units
 Requires(post):     systemd-units
 Requires(preun):    systemd-units
+Requires:       python-IPy
 %endif
 %if ! 0%{?is_el6}
 Requires:       python-augeas
 %endif
 Requires:       glusterfs-client >= 2.0.1
-Requires:       python-IPy
 Requires:       system-release
 Requires:       augeas >= 0.3.5
 Requires:       bridge-utils
@@ -567,19 +567,6 @@ fi
 patch -d /usr/share/dracut/ -p0 < %{app_root}/dracut-7ed4ff0636c74a2f819ad6e4f2ab4862.patch
 
 %endif
-#use all hard-coded defaults for multipath
-# except for getuid_callout where we need to replace-whitespace on EL6
-%if %{is_el6}
-cat > /etc/multipath.conf << \EOF_multipath_conf
-defaults {
-    getuid_callout "/lib/udev/scsi_id --replace-whitespace --whitelisted --device=/dev/%n"
-}
-EOF_multipath_conf
-%else
-cat > /etc/multipath.conf << \EOF_multipath_conf2
-#Use Defaults
-EOF_multipath_conf2
-%endif
 
 #Disable X11Forwarding for sshd
 sed -i -e 's/X11Forwarding yes/X11Forwarding no/' /etc/ssh/sshd_config
@@ -845,6 +832,12 @@ fi
 
 
 %changelog
+* Sat Dec 20 2014 Zhao Chao <chao.zhao@eayun.com> 3.1.0-2-eayunos.4.1
+- merge upstream to cf277e10bb0191a392e27605659935db1ce32f15.
+- fix default iscsi iname substituion.
+- add two i18n strings for EayunOS.
+- remove the Plugins page.
+
 * Mon Dec 15 2014 Zhao Chao <chao.zhao@eayun.com> 3.1.0-1-eayunos.4.1
 - setup/core/remote_storage_page: replace Red Hat with Eayun.
 
