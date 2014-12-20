@@ -1,7 +1,7 @@
-From 537ce6c25f49b104fc43e37f5ac8c305ac0b7ded Mon Sep 17 00:00:00 2001
+From ea35e7d0585d7df47f12cd0dc04f9bdd35cb5ec9 Mon Sep 17 00:00:00 2001
 From: huntxu <mhuntxu@gmail.com>
 Date: Mon, 24 Nov 2014 15:25:14 +0800
-Subject: [PATCH] hostusb passthrough
+Subject: [PATCH 2/6] hostusb passthrough
 
 Change-Id: I1d8f05adf0d23c435719b9d36d3b027827d984c8
 Signed-off-by: huntxu <mhuntxu@gmail.com>
@@ -13,7 +13,7 @@ Conflicts:
 
 Signed-off-by: huntxu <mhuntxu@gmail.com>
 ---
- vdsm.spec.in                        |  6 +++
+ vdsm.spec.in                        | 12 ++++++
  vdsm/API.py                         | 23 +++++++++++
  vdsm/Makefile.am                    |  2 +
  vdsm/hostusb.py                     | 71 ++++++++++++++++++++++++++++++++
@@ -22,15 +22,15 @@ Signed-off-by: huntxu <mhuntxu@gmail.com>
  vdsm/rpc/vdsmapi-schema.json        | 82 +++++++++++++++++++++++++++++++++++++
  vdsm/vdsm-hostusb-passthrough.rules |  1 +
  vdsm/virt/vm.py                     | 76 ++++++++++++++++++++++++++++++++++
- 9 files changed, 279 insertions(+)
+ 9 files changed, 285 insertions(+)
  create mode 100644 vdsm/hostusb.py
  create mode 100644 vdsm/vdsm-hostusb-passthrough.rules
 
 diff --git a/vdsm.spec.in b/vdsm.spec.in
-index 3e42f37..a1afac0 100644
+index fd8c709..cf8c170 100644
 --- a/vdsm.spec.in
 +++ b/vdsm.spec.in
-@@ -670,6 +670,10 @@ install -Dm 0755 init/sysvinit/respawn \
+@@ -666,6 +666,10 @@ install -Dm 0755 init/sysvinit/respawn \
  install -Dm 0644 vdsm/storage/vdsm-lvm.rules \
                   %{buildroot}%{_udevrulesdir}/12-vdsm-lvm.rules
  
@@ -38,10 +38,10 @@ index 3e42f37..a1afac0 100644
 +install -Dm 0644 vdsm/vdsm-hostusb-passthrough.rules \
 +                 %{buildroot}%{_udevrulesdir}/99-vdsm-hostusb-passthrough.rules
 +
- %if 0%{?with_chcon_hack}
- install -Dm 0755 vdsm/storage/vdsm-chcon \
-                  %{buildroot}%{_udevexecdir}/vdsm-chcon
-@@ -961,6 +965,7 @@ exit 0
+ install -Dm 0644 vdsm/limits.conf \
+                  %{buildroot}/etc/security/limits.d/99-vdsm.conf
+ 
+@@ -952,6 +956,7 @@ exit 0
  %{_datadir}/%{vdsm_name}/API.py*
  %{_datadir}/%{vdsm_name}/hooking.py*
  %{_datadir}/%{vdsm_name}/hooks.py*
@@ -49,14 +49,20 @@ index 3e42f37..a1afac0 100644
  %{_datadir}/%{vdsm_name}/lsblk.py*
  %{_datadir}/%{vdsm_name}/md_utils.py*
  %{_datadir}/%{vdsm_name}/mk_sysprep_floppy
-@@ -1150,6 +1155,7 @@ exit 0
+@@ -1141,6 +1146,13 @@ exit 0
  %endif
  %{python_sitelib}/sos/plugins/vdsm.py*
  %{_udevrulesdir}/12-vdsm-lvm.rules
++<<<<<<< HEAD
++=======
 +%{_udevrulesdir}/99-vdsm-hostusb-passthrough.rules
- %if 0%{?with_chcon_hack}
- %{_udevexecdir}/vdsm-chcon
- %endif
++%if 0%{?with_chcon_hack}
++%{_udevexecdir}/vdsm-chcon
++%endif
++>>>>>>> hostusb passthrough
+ /etc/security/limits.d/99-vdsm.conf
+ %{_mandir}/man8/vdsmd.8*
+ %if 0%{?rhel}
 diff --git a/vdsm/API.py b/vdsm/API.py
 index b2caf44..fdfe2e2 100644
 --- a/vdsm/API.py
@@ -455,5 +461,5 @@ index 0f9e4ce..71ae3b7 100644
          if self.isMigrating():
              return errCode['migInProgress']
 -- 
-2.1.3
+1.8.3.1
 

@@ -1,0 +1,29 @@
+From 7b355467f162aa9b3f35a70d3e40713ece4e7bac Mon Sep 17 00:00:00 2001
+From: Zhao Chao <zhaochao1984@gmail.com>
+Date: Sat, 20 Dec 2014 18:28:14 +0800
+Subject: [PATCH 6/6] update SPEC file.
+
+Signed-off-by: Zhao Chao <zhaochao1984@gmail.com>
+---
+ vdsm.spec.in | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/vdsm.spec.in b/vdsm.spec.in
+index dd15564..e35aee6 100644
+--- a/vdsm.spec.in
++++ b/vdsm.spec.in
+@@ -1534,6 +1534,11 @@ exit 0
+ %endif
+ 
+ %changelog
++* Mon Dec 20 2014 zhaochao <chao.zhao@eayun.com> - 4.16.7-8
++- merge upstream patch for fix image device seliunx labels
++  using chown not udev.
++- change default mgmt bridge name to eayunosmgmt.
++
+ * Mon Dec 15 2014 zhaochao <chao.zhao@eayun.com> - 4.16.7-5
+ - add a new OSName for EayunOS in vdsm/caps.
+ 
+-- 
+1.8.3.1
+

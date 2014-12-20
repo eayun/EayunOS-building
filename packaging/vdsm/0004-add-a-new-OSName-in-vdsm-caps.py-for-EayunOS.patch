@@ -1,7 +1,7 @@
-From 7cab5f8fe89119648a04fed403f6c2b5dd070641 Mon Sep 17 00:00:00 2001
+From 36cb2bf14f896d72f0c78ae910e9b02c04d7aa3e Mon Sep 17 00:00:00 2001
 From: Zhao Chao <zhaochao1984@gmail.com>
 Date: Mon, 15 Dec 2014 19:00:10 +0800
-Subject: [PATCH] add a new OSName in vdsm/caps.py for EayunOS.
+Subject: [PATCH 4/6] add a new OSName in vdsm/caps.py for EayunOS.
 
 Signed-off-by: Zhao Chao <zhaochao1984@gmail.com>
 ---
@@ -11,10 +11,10 @@ Signed-off-by: Zhao Chao <zhaochao1984@gmail.com>
  3 files changed, 13 insertions(+), 3 deletions(-)
 
 diff --git a/vdsm.spec.in b/vdsm.spec.in
-index 4b98574..af60bf8 100644
+index df144d9..dd15564 100644
 --- a/vdsm.spec.in
 +++ b/vdsm.spec.in
-@@ -1540,6 +1540,9 @@ exit 0
+@@ -1534,6 +1534,9 @@ exit 0
  %endif
  
  %changelog
@@ -86,5 +86,5 @@ index 8ea8767..9c07ad3 100644
  ##
  # @OsVersion:
 -- 
-2.1.3
+1.8.3.1
 

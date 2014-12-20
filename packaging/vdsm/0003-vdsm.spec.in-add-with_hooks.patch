@@ -1,7 +1,7 @@
-From 923370a15dc294c3e754437aba18552930115a91 Mon Sep 17 00:00:00 2001
+From 7c4eaef106153ec78cea7287369215fcf5d6e502 Mon Sep 17 00:00:00 2001
 From: Zhao Chao <zhaochao1984@gmail.com>
 Date: Mon, 15 Dec 2014 17:00:54 +0800
-Subject: [PATCH] vdsm.spec.in: add with_hooks.
+Subject: [PATCH 3/6] vdsm.spec.in: add with_hooks.
 
 Signed-off-by: Zhao Chao <zhaochao1984@gmail.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Zhao Chao <zhaochao1984@gmail.com>
  1 file changed, 9 insertions(+)
 
 diff --git a/vdsm.spec.in b/vdsm.spec.in
-index a1afac0..4b98574 100644
+index cf8c170..df144d9 100644
 --- a/vdsm.spec.in
 +++ b/vdsm.spec.in
 @@ -15,6 +15,9 @@
@@ -22,7 +22,7 @@ index a1afac0..4b98574 100644
  # Default to skipping autoreconf.  Distros can change just this one line
  # (or provide a command-line override) if they backport any patches that
  # touch configure.ac or Makefile.am.
-@@ -1537,6 +1540,12 @@ exit 0
+@@ -1531,6 +1534,12 @@ exit 0
  %endif
  
  %changelog
