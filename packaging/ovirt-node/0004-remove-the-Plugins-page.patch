@@ -1,14 +1,27 @@
-From 61858e0b92001f38284137f6cdef65ea76d57fec Mon Sep 17 00:00:00 2001
+From 50ab82e0796e47ef5dba316982d6cc3b6c2bb349 Mon Sep 17 00:00:00 2001
 From: Zhao Chao <zhaochao1984@gmail.com>
 Date: Sat, 20 Dec 2014 21:30:31 +0800
-Subject: [PATCH 4/4] remove the Plugins page.
+Subject: [PATCH] remove the Plugins page.
 
 Signed-off-by: Zhao Chao <zhaochao1984@gmail.com>
 ---
+ src/Makefile.am                           |   1 -
  src/ovirt/node/setup/core/plugins_page.py | 202 ------------------------------
- 1 file changed, 202 deletions(-)
+ 2 files changed, 203 deletions(-)
  delete mode 100644 src/ovirt/node/setup/core/plugins_page.py
 
+diff --git a/src/Makefile.am b/src/Makefile.am
+index d2948d5..4da0ee4 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -172,7 +172,6 @@ pyovirt_node_setup_core_PYTHON = \
+   ovirt/node/setup/core/network_page.py \
+   ovirt/node/setup/core/performance_page.py \
+   ovirt/node/setup/core/ping.py \
+-  ovirt/node/setup/core/plugins_page.py \
+   ovirt/node/setup/core/remote_storage_page.py \
+   ovirt/node/setup/core/security_page.py \
+   ovirt/node/setup/core/status_page.py \
 diff --git a/src/ovirt/node/setup/core/plugins_page.py b/src/ovirt/node/setup/core/plugins_page.py
 deleted file mode 100644
 index 156e2fd..0000000
