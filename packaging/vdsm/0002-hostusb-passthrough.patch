@@ -1,4 +1,4 @@
-From ea35e7d0585d7df47f12cd0dc04f9bdd35cb5ec9 Mon Sep 17 00:00:00 2001
+From 5d8ca0b71f5b615a95aaad4976b703c255398a8f Mon Sep 17 00:00:00 2001
 From: huntxu <mhuntxu@gmail.com>
 Date: Mon, 24 Nov 2014 15:25:14 +0800
 Subject: [PATCH 2/6] hostusb passthrough
@@ -13,7 +13,7 @@ Conflicts:
 
 Signed-off-by: huntxu <mhuntxu@gmail.com>
 ---
- vdsm.spec.in                        | 12 ++++++
+ vdsm.spec.in                        |  6 +++
  vdsm/API.py                         | 23 +++++++++++
  vdsm/Makefile.am                    |  2 +
  vdsm/hostusb.py                     | 71 ++++++++++++++++++++++++++++++++
@@ -22,12 +22,12 @@ Signed-off-by: huntxu <mhuntxu@gmail.com>
  vdsm/rpc/vdsmapi-schema.json        | 82 +++++++++++++++++++++++++++++++++++++
  vdsm/vdsm-hostusb-passthrough.rules |  1 +
  vdsm/virt/vm.py                     | 76 ++++++++++++++++++++++++++++++++++
- 9 files changed, 285 insertions(+)
+ 9 files changed, 279 insertions(+)
  create mode 100644 vdsm/hostusb.py
  create mode 100644 vdsm/vdsm-hostusb-passthrough.rules
 
 diff --git a/vdsm.spec.in b/vdsm.spec.in
-index fd8c709..cf8c170 100644
+index fd8c709..708f8a7 100644
 --- a/vdsm.spec.in
 +++ b/vdsm.spec.in
 @@ -666,6 +666,10 @@ install -Dm 0755 init/sysvinit/respawn \
@@ -49,17 +49,11 @@ index fd8c709..cf8c170 100644
  %{_datadir}/%{vdsm_name}/lsblk.py*
  %{_datadir}/%{vdsm_name}/md_utils.py*
  %{_datadir}/%{vdsm_name}/mk_sysprep_floppy
-@@ -1141,6 +1146,13 @@ exit 0
+@@ -1141,6 +1146,7 @@ exit 0
  %endif
  %{python_sitelib}/sos/plugins/vdsm.py*
  %{_udevrulesdir}/12-vdsm-lvm.rules
-+<<<<<<< HEAD
-+=======
 +%{_udevrulesdir}/99-vdsm-hostusb-passthrough.rules
-+%if 0%{?with_chcon_hack}
-+%{_udevexecdir}/vdsm-chcon
-+%endif
-+>>>>>>> hostusb passthrough
  /etc/security/limits.d/99-vdsm.conf
  %{_mandir}/man8/vdsmd.8*
  %if 0%{?rhel}
