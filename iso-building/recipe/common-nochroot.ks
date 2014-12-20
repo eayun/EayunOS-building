@@ -4,6 +4,9 @@ mkdir -p $INSTALL_ROOT/usr/share/EayunOS-Engine-Appliance
 LATEST_APPLIANCE=`ls -tr /data/testing/EayunOS/EayunOS-Engine-Appliance-*.ova.gz | tail -n 1`
 cp -v $LATEST_APPLIANCE $INSTALL_ROOT/usr/share/EayunOS-Engine-Appliance
 
+echo "Copying the initrd out..."
+cp $INSTALL_ROOT/boot/*.img $LIVE_ROOT/isolinux/initrd0.img
+
 if [ -f "ovirt-authorized_keys" ]; then
   echo "Adding authorized_keys to Image"
   mkdir -p $INSTALL_ROOT/root/.ssh
@@ -32,10 +35,6 @@ linux0==1 && $1=="append" {
 }
 linux0==1 && $1=="label" && $2!="linux0" {
   linux0=2
-  print "label install (basic video)"
-  print "  menu label Install (Basic Video)"
-  print "  kernel vmlinuz0"
-  print append0" nomodeset "
   print "label serial-console"
   print "  menu label Install or Upgrade with serial console"
   print "  kernel vmlinuz0"
@@ -44,10 +43,6 @@ linux0==1 && $1=="label" && $2!="linux0" {
   print "  menu label Reinstall"
   print "  kernel vmlinuz0"
   print append0" reinstall "
-  print "label reinstall (basic video)"
-  print "  menu label Reinstall (Basic Video)"
-  print "  kernel vmlinuz0"
-  print append0" reinstall nomodeset "
   print "label reinstall-serial"
   print "  menu label Reinstall with serial console"
   print "  kernel vmlinuz0"

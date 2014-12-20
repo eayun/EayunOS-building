@@ -17,7 +17,6 @@ echo "Lock root account"
 passwd -l root
 
 echo "Relabeling files"
-#/usr/sbin/fixfiles -R -a restore
 restorecon -R /
 
 echo "Configuring libvirt"
@@ -33,6 +32,10 @@ rm -f /etc/cron.daily/logrotate
 
 # Logrotate more judiciously so the size of syslog stays under control
 sed -i '/^.*sharedscripts/a \    rotate 5\n    size 15M\n    compress' /etc/logrotate.d/syslog
+
+if rpm -q --quiet rhn-virtualization-host; then
+    sed -i -e 's/\.py/\.pyc/' -e 's/<//' /etc/cron.d/rhn-virtualization.cron
+fi
 
 # root's bash profile
 cat >> /root/.bashrc << \EOF_bashrc
@@ -176,8 +179,6 @@ set /files/etc/sysconfig/nfs/STATD_OUTGOING_PORT 2020
 save
 EOF_nfs
 
-python -m compileall /usr/lib/python2.*/site-packages/sos
-
 # XXX someting is wrong with readonly-root and dracut
 # see modules.d/95rootfs-block/mount-root.sh
 sed -i "s/defaults,noatime/defaults,ro,noatime/g" /etc/fstab
@@ -293,5 +294,18 @@ patch --fuzz 3 -d /usr/lib/python2.*/site-packages/sos -p0 << \EOF_sos_patch
 EOF_sos_patch
 fi
 
-echo "Regenerating initramfs"
-dracut -f || :
+python -m compileall /usr/lib/python2.*/site-packages/sos
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=1168582
+rm -vf /usr/lib64/python2.*/site-packages/backports/*
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=1167620
+# Ensure that mpath is enabled and find_multipaths is y
+mpathconf --enable --find_multipaths y
+# Then ensure that getuid_callout is set for b/c
+sed -i \
+   -e "/find_multipaths / a getuid_callout \"/lib/udev/scsi_id --replace-whitespace --whitelisted --device=/dev/%n\"" \
+   -e "/^#/ d" \
+   -e "/user_friendly_names/ d" \
+   /etc/multipath.conf
+

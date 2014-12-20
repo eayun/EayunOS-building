@@ -14,6 +14,7 @@
 %post
 %include common-post.ks
 %include EayunOS-4.1-post.ks
+%include dracut-post.ks
 %end
 
 %post --nochroot
