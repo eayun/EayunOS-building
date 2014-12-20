@@ -29,7 +29,7 @@
 Summary:        oVirt Hosted Engine setup tool
 Name:           ovirt-hosted-engine-setup
 Version:        1.2.2
-Release:        4%{?dist_eayunos}
+Release:        5%{?dist_eayunos}
 License:        LGPLv2+
 URL:            http://www.ovirt.org
 Source:         http://resources.ovirt.org/pub/ovirt-3.5-snapshot/src/%{name}/%{name}-%{package_version}.tar.gz
@@ -104,6 +104,10 @@ make %{?_smp_mflags} install DESTDIR="%{buildroot}"
 %{vdsmhooksdir}/before_vm_start/
 
 %changelog
+* Sat Dec 20 2014 Zhao Chao <chao.zhao@eayun.com> - 1.2.2-5.eayunos.4.1
+- fix iscsi backend with appliance setup.
+- change eayunosmgmt as the default bridge name.
+
 * Tue Dec 09 2014 Zhao Chao <chao.zhao@eayun.com> - 1.2.2-4.eayunos.4.1
 - merge upstream commits, to 25852b53aae591de88aff8a26c0c0a85a4e66a0e,
   as host name collision bug now is fixed by upstream commit, drop our
