@@ -23,6 +23,11 @@ ovirt-node-plugin-hosted-engine
 # To disable hostonly mode
 dracut-config-generic
 
+# Plymouth
+plymouth
+plymouth-core-libs
+plymouth-scripts
+
 # Add EFi support
 shim
 grub2-efi
@@ -54,3 +59,13 @@ vdsm-hook-spiceoptions
 vdsm-hook-sriov
 vdsm-hook-vmdisk
 vdsm-hook-vmfex
+
+# OpenStack Neutron Integration
+openstack-selinux
+openstack-neutron
+openstack-neutron-openvswitch
+openstack-neutron-linuxbridge
+
+# EayunOS
+-centos-release
+eayunos-release
