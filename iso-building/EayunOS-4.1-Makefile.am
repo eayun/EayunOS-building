@@ -53,6 +53,9 @@ OVIRT_URL           = $(MIRRORS_BASE_URL)/ovirt/3.5/EL7/
 GLUSTER_NOARCH_URL  = $(MIRRORS_BASE_URL)/gluster/3.5/LATEST/epel-7/noarch/
 GLUSTER_X86_64_URL  = $(MIRRORS_BASE_URL)/gluster/3.5/LATEST/epel-7/x86_64/
 
+
+RDO_ICEHOUSE_URL	= $(MIRRORS_BASE_URL)/rdo/openstack-icehouse/epel-7/
+
 ISO_DEST_DIR        = /data/testing/EayunOS
 
 
@@ -75,6 +78,7 @@ repos.ks: kickstarts
         EPEL_REPO_LINE="repo --name=epel-7 --baseurl=$(EPEL_URL)" ;\
         GLUSTER_NOARCH_REPO_LINE="repo --name=gluster-noarch --baseurl=$(GLUSTER_NOARCH_URL)" ;\
         GLUSTER_X86_64_REPO_LINE="repo --name=gluster-x86_64 --baseurl=$(GLUSTER_X86_64_URL)" ;\
+        RDO_ICEHOUSE_REPO_LINE="repo --name=rdo-icehouse --baseurl=$(RDO_ICEHOUSE_URL)" ;\
         echo "$${EAYUNOS_REPO_LINE}" > repos.ks;\
         echo "$${OVIRT_REPO_LINE}" >> repos.ks;\
         echo "$${CENTOS_OS_REPO_LINE}" >> repos.ks ;\
@@ -83,6 +87,7 @@ repos.ks: kickstarts
         echo "$${EPEL_REPO_LINE}" >> repos.ks ;\
         echo "$${GLUSTER_NOARCH_REPO_LINE}" >> repos.ks ;\
         echo "$${GLUSTER_X86_64_REPO_LINE}" >> repos.ks ;\
+        echo "$${RDO_ICEHOUSE_REPO_LINE}" >> repos.ks ;\
 	)
 
 version.ks: repos.ks $(EXTRA_RECEPIE)
