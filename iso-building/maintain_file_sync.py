@@ -13,7 +13,7 @@ UPSTREAM_URL = "http://192.168.3.251/eayunos-appliance/"
 DEST_DIR = "/data/testing/EayunOS/"
 APPLIANCE_NAME = "EayunOS-Engine-Appliance-4.1"
 
-pattern = re.compile(r"\d{8,}")
+pattern = re.compile(APPLIANCE_NAME + r"[^0-9]*-(\d{8,})" + ".ova.gz")
 
 upstream_releases = {}
 local_copies = {}
@@ -41,7 +41,7 @@ def update_releases_dict(releases_dict, release_info):
             releases_dict[release_num].footprint = footprint
 
 def get_release_info(path):
-    release_num = pattern.search(path).group(0)
+    release_num = pattern.search(path).group(1)
     relative_url = ''
     footprint = ''
 
