@@ -13,8 +13,7 @@ sources:
 	for file in *.patch; do \
 		if [ -f $$file ]; then \
 			cd upstream; \
-			git apply ../$$file; \
-			git commit -am "applying $$file"; \
+			git am ../$$file; \
 			cd ..; \
 		fi; \
 	done; \
