@@ -29,7 +29,7 @@
 Summary:        The %{product_family} daemons/scripts
 Name:           ovirt-node
 Version:        3.1.0
-Release:        2%{?dist_eayunos}
+Release:        3%{?dist_eayunos}
 Source0:        http://plain.resources.ovirt.org/pub/ovirt-master-snapshot/src/%{name}/%{name}-%{package_version}.tar.gz
 License:        GPLv2+
 Group:          Applications/System
@@ -832,6 +832,9 @@ fi
 
 
 %changelog
+* Sat Dec 23 2014 Zhao Chao <chao.zhao@eayun.com> 3.1.0-3-eayunos.4.1
+- update chinese locale file.
+
 * Sat Dec 20 2014 Zhao Chao <chao.zhao@eayun.com> 3.1.0-2-eayunos.4.1
 - merge upstream to cf277e10bb0191a392e27605659935db1ce32f15.
 - fix default iscsi iname substituion.
