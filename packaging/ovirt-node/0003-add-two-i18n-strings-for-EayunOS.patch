@@ -18,10 +18,10 @@ index 7ee5509..7fb5540 100644
  msgstr "该屏幕已经被锁定"
 +
 +# for EayunOS
-+msgid "EayunOS Manager"                                                            
-+msgstr "EayunOS 管理中心"                                                          
-+                                                                                   
-+msgid "Hosted Engine"                                                              
++msgid "EayunOS Manager"
++msgstr "EayunOS 管理中心"
++
++msgid "Hosted Engine"
 +msgstr "配置虚拟化管理中心"
 -- 
 1.8.3.1
