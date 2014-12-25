@@ -27,7 +27,7 @@ EayunOS 4.1 构建由 2 个部分组成： packaging 和 iso-building 。
 
 #### iso-building
 
-包括 [ovirt-node-iso](iso-building/ovirt-node-iso) （同样使用 git submodule ）以及针对 EayunOS 的 Makefile.am 、 configure.ac 和 recipe 文件。
+包括 ovirt-node-iso （同样使用 git submodule ）以及针对 EayunOS 的 Makefile.am 、 configure.ac 和 recipe 文件。
 
 ### EayunOS 4.0
 
