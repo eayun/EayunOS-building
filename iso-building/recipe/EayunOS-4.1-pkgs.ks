@@ -69,3 +69,5 @@ openstack-neutron-linuxbridge
 # EayunOS
 -centos-release
 eayunos-release
+## avoid upstream packages updating
+ovirt-hosted-engine-ha = 1.2.4-1.el7
