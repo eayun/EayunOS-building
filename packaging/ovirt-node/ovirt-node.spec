@@ -29,7 +29,7 @@
 Summary:        The %{product_family} daemons/scripts
 Name:           ovirt-node
 Version:        3.1.0
-Release:        3%{?dist_eayunos}
+Release:        4%{?dist_eayunos}
 Source0:        http://plain.resources.ovirt.org/pub/ovirt-master-snapshot/src/%{name}/%{name}-%{package_version}.tar.gz
 License:        GPLv2+
 Group:          Applications/System
@@ -832,6 +832,9 @@ fi
 
 
 %changelog
+* Wed Apr 1 2015 Pan Liyang <liyang.pan@eayun.com> 3.1.0-4-eayunos.4.1
+- add support for efi boot under centos
+
 * Sat Dec 23 2014 Zhao Chao <chao.zhao@eayun.com> 3.1.0-3-eayunos.4.1
 - update chinese locale file.
 
