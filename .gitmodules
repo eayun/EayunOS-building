@@ -19,6 +19,6 @@
 [submodule "vdsm"]
 	path = packaging/vdsm/upstream
 	url = https://github.com/oVirt/vdsm.git
-[submodule "aio-building"]
-	path = aio-building
+[submodule "aio-building/aio-building"]
+	path = aio-building/aio-building
 	url = https://github.com/oVirt/ovirt-live.git
