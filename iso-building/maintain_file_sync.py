@@ -9,7 +9,7 @@ import requests
 import time
 import commands
 
-UPSTREAM_URL = "http://192.168.3.251/eayunos-appliance/"
+UPSTREAM_URL = "http://192.168.3.253/eayunos-appliance/"
 DEST_DIR = "/data/testing/EayunOS/"
 APPLIANCE_NAME = "EayunOS-Engine-Appliance-4.1"
 
