@@ -75,7 +75,7 @@ kickstarts: clean_ks node-creator
 repos.ks: kickstarts
 	( \
         EAYUNOS_REPO_LINE="repo --name=eayunos --baseurl=$(EAYUNOS_URL)";\
-        OVIRT_REPO_LINE="repo --name=ovirt --baseurl=$(OVIRT_URL) --excludepkgs='vdsm-*,ovirt-node,ovirt-hosted-engine-setup,ovirt-node-plugin-hosted-engine,ovirt-node-plugin-vdsm'";\
+        OVIRT_REPO_LINE="repo --name=ovirt --baseurl=$(OVIRT_URL) --excludepkgs='vdsm-*,ovirt-node,ovirt-hosted-engine-setup,ovirt-node-plugin-hosted-engine,ovirt-node-plugin-vdsm,ovirt-optimizer-*'";\
         CENTOS_OS_REPO_LINE="repo --name=centos-os --baseurl=$(CENTOS_OS_URL)";\
         CENTOS_UPDATES_REPO_LINE="repo --name=centos-updates --baseurl=$(CENTOS_UPDATES_URL)";\
         CENTOS_EXTRAS_REPO_LINE="repo --name=centos-extras --baseurl=$(CENTOS_EXTRAS_URL)";\
