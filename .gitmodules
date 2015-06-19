@@ -19,3 +19,6 @@
 [submodule "vdsm"]
 	path = packaging/vdsm/upstream
 	url = https://github.com/oVirt/vdsm.git
+[submodule "packaging/anaconda/upstream"]
+	path = packaging/anaconda/upstream
+	url = https://github.com/rhinstaller/anaconda.git
