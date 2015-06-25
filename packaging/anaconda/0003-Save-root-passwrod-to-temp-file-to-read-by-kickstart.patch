@@ -1,0 +1,47 @@
+From b725ab5b4865746e3f22f65ad31a1f4bb02a7c57 Mon Sep 17 00:00:00 2001
+From: walteryang47 <walteryang47@gmail.com>
+Date: Thu, 25 Jun 2015 02:25:08 -0400
+Subject: [PATCH 3/4] Save root passwrod to temp file to read by kickstart
+
+And to be used as admin@internal password
+
+Signed-off-by: walteryang47 <walteryang47@gmail.com>
+---
+ pyanaconda/ui/gui/spokes/password.py | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/pyanaconda/ui/gui/spokes/password.py b/pyanaconda/ui/gui/spokes/password.py
+index 2cf390d..6c1c29d 100644
+--- a/pyanaconda/ui/gui/spokes/password.py
++++ b/pyanaconda/ui/gui/spokes/password.py
+@@ -20,6 +20,8 @@
+ #                    Chris Lumens <clumens@redhat.com>
+ #
+ 
++import subprocess
++
+ from pyanaconda.flags import flags
+ from pyanaconda.i18n import _, N_
+ from pyanaconda.users import cryptPassword, validatePassword, checkPassword
+@@ -204,9 +206,18 @@ class PasswordSpoke(FirstbootSpokeMixIn, NormalSpoke):
+         self._error = False
+         return True
+ 
++    def savePasswordToFile(self):
++        ret = subprocess.call("echo '%s' > /tmp/rootpw" % self.pw.get_text(),
++        shell=True,
++        stdout=open('/dev/null', 'w'),
++        stderr=subprocess.STDOUT)
++        if ret != 0:
++            log.error("Error saving root password")
++
+     def on_back_clicked(self, button):
+         if self._validatePassword():
+             self.clear_info()
++            self.savePasswordToFile()
+             NormalSpoke.on_back_clicked(self, button)
+         else:
+             self.clear_info()
+-- 
+1.8.3.1
+
