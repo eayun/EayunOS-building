@@ -1175,6 +1175,7 @@
           <packagereq type="mandatory">vdsm-hook-vmfex</packagereq>
           <packagereq type="mandatory">vdsm-reg</packagereq>
           <packagereq type="mandatory">libcgroup</packagereq>
+          <packagereq type="mandatory">eayunos-lic</packagereq>
       </packagelist>
   </group>
   <category>
