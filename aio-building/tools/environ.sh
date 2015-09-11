@@ -7,7 +7,7 @@ RELEASE=1
 ISO_DATA_PATH=EayunOS-iso
 
 PUBLISHER=liyang.pan@eayun.com
-DATESTRING=MINIMAL
+DATESTRING=MINIMAL-`date '+%Y%m%d%H%M%S'`
 ARCH=`uname -m`
 
 LOCAL_REPO1=http://192.168.3.239:11080/pulp/repos/centos/7.0.1406/os/x86_64/
