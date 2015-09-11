@@ -1177,6 +1177,7 @@
           <packagereq type="mandatory">libcgroup</packagereq>
           <packagereq type="mandatory">eayunos-lic</packagereq>
           <packagereq type="mandatory">qemu-kvm-tools</packagereq>
+          <packagereq type="mandatory">jboss-jackson-bugfix</packagereq>
       </packagelist>
   </group>
   <category>
