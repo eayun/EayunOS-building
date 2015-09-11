@@ -1176,6 +1176,7 @@
           <packagereq type="mandatory">vdsm-reg</packagereq>
           <packagereq type="mandatory">libcgroup</packagereq>
           <packagereq type="mandatory">eayunos-lic</packagereq>
+          <packagereq type="mandatory">qemu-kvm-tools</packagereq>
       </packagelist>
   </group>
   <category>
