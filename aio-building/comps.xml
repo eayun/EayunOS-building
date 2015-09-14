@@ -1118,12 +1118,6 @@
     <packagereq type="mandatory">ovirt-engine-webadmin-portal</packagereq>
     <packagereq type="mandatory">ovirt-engine-websocket-proxy</packagereq>
     <packagereq type="mandatory">simple.ovirt.brand</packagereq>
-    <packagereq type="mandatory">glusterfs</packagereq>
-    <packagereq type="mandatory">glusterfs-api</packagereq>
-    <packagereq type="mandatory">glusterfs-cli</packagereq>
-    <packagereq type="mandatory">glusterfs-fuse</packagereq>
-    <packagereq type="mandatory">glusterfs-libs</packagereq>
-    <packagereq type="mandatory">glusterfs-rdma</packagereq>
     <packagereq type="mandatory">virt-viewer-win</packagereq>
     <packagereq type="mandatory">hostusb-passthrough</packagereq>
     <packagereq type="mandatory">manage-domains-plugin</packagereq>
@@ -1149,6 +1143,8 @@
           <packagereq type="mandatory">glusterfs-fuse</packagereq>
           <packagereq type="mandatory">glusterfs-libs</packagereq>
           <packagereq type="mandatory">glusterfs-rdma</packagereq>
+          <packagereq type="mandatory">glusterfs-server</packagereq>
+          <packagereq type="mandatory">vdsm-gluster</packagereq>
           <packagereq type="mandatory">vdsm-hook-checkimages</packagereq>
           <packagereq type="mandatory">vdsm-hook-directlun</packagereq>
           <packagereq type="mandatory">vdsm-hook-ethtool-options</packagereq>
