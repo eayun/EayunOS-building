@@ -1122,6 +1122,7 @@
     <packagereq type="mandatory">hostusb-passthrough</packagereq>
     <packagereq type="mandatory">manage-domains-plugin</packagereq>
     <packagereq type="mandatory">ovirt-guest-tools</packagereq>
+    <packagereq type="mandatory">tcpdump</packagereq>
     </packagelist>
   </group>
   <group>
@@ -1178,6 +1179,7 @@
           <packagereq type="mandatory">python-neutron</packagereq>
           <packagereq type="mandatory">openstack-neutron</packagereq>
           <packagereq type="mandatory">openstack-neutron-openvswitch</packagereq>
+          <packagereq type="mandatory">tcpdump</packagereq>
       </packagelist>
   </group>
   <category>
