@@ -1123,6 +1123,17 @@
     <packagereq type="mandatory">manage-domains-plugin</packagereq>
     <packagereq type="mandatory">ovirt-guest-tools</packagereq>
     <packagereq type="mandatory">tcpdump</packagereq>
+    <packagereq type="mandatory">engine-vm-backup</packagereq>
+    <packagereq type="mandatory">ovirt-optimizer</packagereq>
+    <packagereq type="mandatory">ovirt-optimizer-dependencies</packagereq>
+    <packagereq type="mandatory">ovirt-optimizer-jboss7</packagereq>
+    <packagereq type="mandatory">ovirt-optimizer-ui</packagereq>
+    <packagereq type="mandatory">ovirt-optimizer-setup</packagereq>
+    <packagereq type="mandatory">ovirt-engine-reports</packagereq>
+    <packagereq type="mandatory">ovirt-engine-reports-setup</packagereq>
+    <packagereq type="mandatory">ovirt-engine-dwh</packagereq>
+    <packagereq type="mandatory">ovirt-engine-dwh-setup</packagereq>
+    <packagereq type="mandatory">patternfly1</packagereq>
     </packagelist>
   </group>
   <group>
