@@ -1,4 +1,4 @@
-From 02ee5671d3f09f0ebdd61c36efd53490cd5466b7 Mon Sep 17 00:00:00 2001
+From dcadf7b862a9946d41ce3a0cc23bcc96a897f24b Mon Sep 17 00:00:00 2001
 From: walteryang <walteryang47@users.noreply.github.com>
 Date: Tue, 28 Jul 2015 17:31:47 +0800
 Subject: [PATCH] Backport hostdev passthrough feature from ovirt-3.6
@@ -8,13 +8,14 @@ Signed-off-by: walteryang <walteryang47@users.noreply.github.com>
  vdsm.spec.in                 |   2 +
  vdsm/Makefile.am             |   1 +
  vdsm/caps.py                 |   9 +
- vdsm/hostdev.py              |  65 +++++-
+ vdsm/hostdev.py              | 195 +++++++++++++++++
  vdsm/rpc/vdsmapi-schema.json |  53 ++++-
  vdsm/supervdsmServer         |  62 +++++-
  vdsm/virt/Makefile.am        |   1 +
  vdsm/virt/vm.py              | 220 +++++++++++++++++++-
  vdsm/virt/vmxml.py           | 485 +++++++++++++++++++++++++++++++++++++++++++
- 9 files changed, 886 insertions(+), 12 deletions(-)
+ 9 files changed, 1018 insertions(+), 10 deletions(-)
+ create mode 100644 vdsm/hostdev.py
  create mode 100644 vdsm/virt/vmxml.py
 
 diff --git a/vdsm.spec.in b/vdsm.spec.in
@@ -77,17 +78,36 @@ index 2334b6f..3e95bd7 100644
      return caps
  
 diff --git a/vdsm/hostdev.py b/vdsm/hostdev.py
-index c59f2ff..140044a 100644
---- a/vdsm/hostdev.py
+new file mode 100644
+index 0000000..140044a
+--- /dev/null
 +++ b/vdsm/hostdev.py
-@@ -20,10 +20,17 @@
- 
- import xml.etree.ElementTree as etree
- 
--import hooks
- from vdsm import libvirtconnection
- import supervdsm
- 
+@@ -0,0 +1,195 @@
++#
++# Copyright 2014 Red Hat, Inc.
++#
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++#
++# Refer to the README and COPYING files for full details of the license
++#
++
++import xml.etree.ElementTree as etree
++
++from vdsm import libvirtconnection
++import supervdsm
++
 +CAPABILITY_TO_XML_ATTR = {'pci': 'pci',
 +                          'scsi': 'scsi',
 +                          'usb_device': 'usb'}
@@ -96,19 +116,28 @@ index c59f2ff..140044a 100644
 +class NoIOMMUSupportException(Exception):
 +    pass
 +
- 
- def _parse_address(caps, children):
-     params = {}
-@@ -41,8 +48,24 @@ def _parse_usb_address(caps):
-     return _parse_address(caps, ('bus', 'device'))
- 
- 
++
++def _parse_address(caps, children):
++    params = {}
++    for cap in children:
++        params[cap] = caps.find(cap).text
++
++    return params
++
++
++def _parse_pci_address(caps):
++    return _parse_address(caps, ('domain', 'bus', 'slot', 'function'))
++
++
++def _parse_usb_address(caps):
++    return _parse_address(caps, ('bus', 'device'))
++
++
 +def _parse_scsi_address(caps):
 +    return _parse_address(caps, ('host', 'bus', 'target', 'lun'))
 +
 +
- def name_to_pci_path(device_name):
--     return device_name[4:].replace('_', '.').replace('.', ':', 2)
++def name_to_pci_path(device_name):
 +    return device_name[4:].replace('_', '.').replace('.', ':', 2)
 +
 +
@@ -122,21 +151,96 @@ index c59f2ff..140044a 100644
 +                                        bus[2:],
 +                                        slot[2:],
 +                                        function[2:])
- 
- 
- def _sriov_totalvfs(device_name):
-@@ -57,6 +80,7 @@ def _parse_device_params(device_xml):
-     also doing sysfs lookups for sr-iov related information
-     """
-     address_parser = {'pci': _parse_pci_address,
++
++
++def _sriov_totalvfs(device_name):
++    with open('/sys/bus/pci/devices/{0}/sriov_totalvfs'.format(
++            name_to_pci_path(device_name))) as f:
++        return int(f.read())
++
++
++def _parse_device_params(device_xml):
++    """
++    Process device_xml and return dict of found known parameters,
++    also doing sysfs lookups for sr-iov related information
++    """
++    address_parser = {'pci': _parse_pci_address,
 +                      'scsi': _parse_scsi_address,
-                       'usb_device': _parse_usb_address}
- 
-     params = {}
-@@ -132,3 +156,40 @@ def list_by_caps(caps=None):
-         devices[devName] = {'params': params}
- 
-     return devices
++                      'usb_device': _parse_usb_address}
++
++    params = {}
++
++    devXML = etree.fromstring(device_xml)
++    name = devXML.find('name').text
++    if name != 'computer':
++        params['parent'] = devXML.find('parent').text
++
++    caps = devXML.find('capability')
++    params['capability'] = caps.attrib['type']
++
++    for element in ('vendor', 'product', 'interface'):
++        elementXML = caps.find(element)
++        if elementXML is not None:
++            if 'id' in elementXML.attrib:
++                params[element + '_id'] = elementXML.attrib['id']
++            if elementXML.text:
++                params[element] = elementXML.text
++
++    physfn = caps.find('capability')
++    if physfn is not None and physfn.attrib['type'] == 'phys_function' \
++            and params['capability'] == 'pci':
++        address = physfn.find('address')
++        params['physfn'] = pci_address_to_name(**address.attrib)
++
++    iommu_group = caps.find('iommuGroup')
++    if iommu_group is not None:
++        params['iommu_group'] = iommu_group.attrib['number']
++
++    try:
++        params['totalvfs'] = _sriov_totalvfs(name)
++    except IOError:
++        # Device does not support sriov, we can safely go on
++        pass
++
++    try:
++        params['address'] = address_parser[params['capability']](caps)
++    except KeyError:
++        # We can somewhat safely ignore missing address as that means we're
++        # dealing with device that is not yet supported
++        pass
++
++    return params
++
++
++def _get_devices_from_libvirt():
++    """
++    Returns all available host devices from libvirt parsed to dict
++    """
++    return dict((device.name(), _parse_device_params(device.XMLDesc(0)))
++                for device in libvirtconnection.get().listAllDevices(0))
++
++
++def list_by_caps(caps=None):
++    """
++    Returns devices that have specified capability in format
++    {device_name: {'params': {'capability': '', 'vendor': '',
++                              'vendor_id': '', 'product': '',
++                              'product_id': '', 'iommu_group': ''},
++                   'vmId': vmId]}
++
++    caps -- list of strings determining devices of which capabilities
++            will be returned (e.g. ['pci', 'usb'] -> pci and usb devices)
++    """
++    devices = {}
++    libvirt_devices = _get_devices_from_libvirt()
++
++    for devName, params in libvirt_devices.items():
++        if caps and params['capability'] not in caps:
++            continue
++
++        devices[devName] = {'params': params}
++
++    return devices
 +
 +
 +def _get_device_ref_and_params(device_name):
@@ -175,7 +279,7 @@ index c59f2ff..140044a 100644
 +        supervdsm.getProxy().rmAppropriateIommuGroup(iommu_group)
 +        libvirt_device.reAttach()
 diff --git a/vdsm/rpc/vdsmapi-schema.json b/vdsm/rpc/vdsmapi-schema.json
-index 5faa8c6..51329c7 100644
+index 9c07ad3..f598a94 100644
 --- a/vdsm/rpc/vdsmapi-schema.json
 +++ b/vdsm/rpc/vdsmapi-schema.json
 @@ -2195,11 +2195,14 @@
