@@ -107,9 +107,12 @@ biosdevname
 fcoe-utils
 #glusterfs client packages
 glusterfs
-glusterfs-devel
+glusterfs-api
+glusterfs-cli
+glusterfs-libs
 glusterfs-fuse
 glusterfs-rdma
+glusterfs-server
 
 NetworkManager-glib
 

@@ -62,6 +62,8 @@ vdsm-hook-vmfex
 
 # OpenStack Neutron Integration
 openstack-selinux
+python-neutron
+python-neutronclient
 openstack-neutron
 openstack-neutron-openvswitch
 openstack-neutron-linuxbridge
@@ -71,3 +73,6 @@ openstack-neutron-linuxbridge
 eayunos-release
 ## avoid upstream packages updating
 ovirt-hosted-engine-ha = 1.2.4-1.el7
+
+#gluster
+vdsm-gluster
