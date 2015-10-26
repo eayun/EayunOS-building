@@ -37,11 +37,11 @@ RECIPE_DIR 		  = @RECIPES@
 # then check PATH
 NODE_CREATOR      = $(shell ( test -e $(RECIPE_DIR)/node-creator && echo "$(RECIPE_DIR)/node-creator" ) || ( test -e node-creator && echo "./node-creator" ) || which node-creator 2>/dev/null)
 
-EAYUNOS_URL         = http://192.168.3.239/CI-Repos/EayunOS-4.1-testing/x86_64/
+EAYUNOS_URL         = http://192.168.2.56/eayunVirt/rpms/EayunOS411ISORepo/
 
-MIRRORS_BASE_URL    = http://192.168.3.239:11080/pulp/repos
+MIRRORS_BASE_URL    = http://192.168.2.65:11080/pulp/repos
 
-CENTOS_BASE_URL     = $(MIRRORS_BASE_URL)/centos/7.0.1406
+CENTOS_BASE_URL     = $(MIRRORS_BASE_URL)/centos/7.1.1503
 CENTOS_OS_URL       = $(CENTOS_BASE_URL)/os/x86_64
 CENTOS_UPDATES_URL  = $(CENTOS_BASE_URL)/updates/x86_64
 CENTOS_EXTRAS_URL   = $(CENTOS_BASE_URL)/extras/x86_64
@@ -58,7 +58,7 @@ RDO_ICEHOUSE_URL	= $(MIRRORS_BASE_URL)/rdo/openstack-icehouse/epel-7/
 
 GLUSTER_36_UP_URL   = http://download.gluster.org/pub/gluster/glusterfs/3.6/LATEST/CentOS/epel-7/x86_64/
 
-EayunOS_release_URL = http://192.168.3.247/eayunVirt/rpms/EayunOSRelease/
+EayunOS_release_URL = http://192.168.2.56/eayunVirt/rpms/EayunOSRelease/
 
 ISO_DEST_DIR        = /data/testing/EayunOS
 
@@ -85,7 +85,7 @@ repos.ks: kickstarts
         RDO_ICEHOUSE_REPO_LINE="repo --name=rdo-icehouse --baseurl=$(RDO_ICEHOUSE_URL)" ;\
         GLUSTER_36_UP_LINE="repo --name=gluster-36-upstream --baseurl=$(GLUSTER_36_UP_URL)" ;\
         EayunOS_release_LINE="repo --name=eayunos-release --baseurl=$(EayunOS_release_URL)" ;\
-        echo "$${EAYUNOS_REPO_LINE}" > repos.ks;\
+        echo "$${EAYUNOS_REPO_LINE}" >> repos.ks;\
         echo "$${OVIRT_REPO_LINE}" >> repos.ks;\
         echo "$${CENTOS_OS_REPO_LINE}" >> repos.ks ;\
         echo "$${CENTOS_UPDATES_REPO_LINE}" >> repos.ks ;\
