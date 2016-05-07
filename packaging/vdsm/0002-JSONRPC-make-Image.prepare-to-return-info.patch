@@ -1,0 +1,95 @@
+From ae9b080250a7a23a1749bdeea5f0cef816b88466 Mon Sep 17 00:00:00 2001
+From: Amit Aviram <aaviram@redhat.com>
+Date: Thu, 24 Dec 2015 10:40:54 +0200
+Subject: [PATCH 2/4] JSONRPC: make Image.prepare to return info.
+
+Currently the API which exposes Image.prepare is different between
+XMLRPC and JSONRPC; When calling this verb via XMLRPC, info is
+returned while nothing is returned when calling it via JSONRPC.
+
+After preparing an image, the caller expects to get some valuable
+information regarding it.
+
+This patch makes "Image.prepare" JSONRPC verb call to return
+relevant info for current usages, which are also exposed when using
+XMLRPC.
+
+Change-Id: Icc03568b35c14e1f5c7239c8c3df8f74acf3ec51
+Signed-off-by: Amit Aviram <aaviram@redhat.com>
+Reviewed-on: https://gerrit.ovirt.org/51054
+Reviewed-by: Nir Soffer <nsoffer@redhat.com>
+Continuous-Integration: Jenkins CI
+Reviewed-by: Adam Litke <alitke@redhat.com>
+(cherry picked from commit 0ca680700596564b4d6b0ef01ed4b0ae7c488de7)
+---
+ vdsm/rpc/Bridge.py           |  5 +++++
+ vdsm/rpc/vdsmapi-schema.json | 19 ++++++++++++++++++-
+ 2 files changed, 23 insertions(+), 1 deletion(-)
+
+diff --git a/vdsm/rpc/Bridge.py b/vdsm/rpc/Bridge.py
+index 8815a18..425d9d6 100644
+--- a/vdsm/rpc/Bridge.py
++++ b/vdsm/rpc/Bridge.py
+@@ -395,6 +395,10 @@ def Volume_getsize_Ret(ret):
+     return {'truesize': ret['truesize'], 'apparentsize': ret['apparentsize']}
+ 
+ 
++def Image_prepare_Ret(ret):
++    return {'path': ret['path']}
++
++
+ ##
+ # Possible ways to override a command:
+ # - Supply a custom call function if the function name doesn't map directly to
+@@ -440,6 +444,7 @@ command_info = {
+     'Image_reconcileVolumeChain': {'ret': 'volumes'},
+     'Image_syncData': {'ret': 'uuid'},
+     'Image_upload': {'ret': 'uuid'},
++    'Image_prepare': {'ret': Image_prepare_Ret},
+     'ISCSIConnection_discoverSendTargets': {'ret': 'fullTargets'},
+     'LVMVolumeGroup_create': {'ret': 'uuid'},
+     'LVMVolumeGroup_getInfo': {'ret': 'info'},
+diff --git a/vdsm/rpc/vdsmapi-schema.json b/vdsm/rpc/vdsmapi-schema.json
+index 94e2473..c480cdb 100644
+--- a/vdsm/rpc/vdsmapi-schema.json
++++ b/vdsm/rpc/vdsmapi-schema.json
+@@ -5271,6 +5271,18 @@
+  'returns': 'UUID'}
+ 
+ ##
++# @ImageInfo:
++#
++# Information about a prepared image
++#
++# @path:          The image path
++#
++# Since: 4.18.0
++##
++{'type': 'ImageInfo',
++ 'data': {'path': 'str'}}
++
++##
+ # @Image.prepare:
+ #
+ # Prepare an image, making the needed volumes available.
+@@ -5283,11 +5295,16 @@
+ #
+ # @volumeID:         The UUID of the Volume
+ #
++# Returns:
++# Information about prepared image
++# (new in version 4.18)
++#
+ # Since: 4.15.0
+ ##
+ {'command': {'class': 'Image', 'name': 'prepare'},
+  'data': {'storagepoolID': 'UUID', 'storagedomainID': 'UUID',
+-          'imageID': 'UUID', 'volumeID': 'UUID'}}
++          'imageID': 'UUID', 'volumeID': 'UUID'}
++ 'returns': 'ImageInfo'}}
+ 
+ ##
+ # @Image.teardown:
+-- 
+1.9.3
+

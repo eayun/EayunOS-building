@@ -1,0 +1,133 @@
+From b334fea5795203c71c17ef9a542dba8f8083fd6e Mon Sep 17 00:00:00 2001
+From: Amit Aviram <aaviram@redhat.com>
+Date: Thu, 24 Mar 2016 12:03:23 +0200
+Subject: [PATCH 3/4] image: add a flag for preparing with illegal volumes.
+
+Currently preparing an image is impossible if one of its volumes is
+illegal.
+
+In the new image upload flow, the volume's legality is being used for
+preventing volume usages while doing I/O using ovirt-imageio-daemon.
+
+When the upload starts, a new image is created and prepared. Then, it is
+being set to ILLEGAL, and only after- a ticket for doing I/O is being
+sent to ovirt-imageio-daemon in order for the user to write data into
+it.
+
+If this process is stopped by any reason- resuming it means preparing
+the image while it is ILLEGAL.
+
+This patch adds a flag in the API for enabling the prepare process even
+if its volumes are ILLEGAL, for the upload image to use.
+
+The flow uses this flag because when a volume is illegal, it can't be
+attached to a running VM, nor a VM can't start with an illegal disk
+attached. Also, adding a new volume state, such as UPLOADING or
+UNSAFE has implications on storage version, and means adding
+validations in many storage flows.
+
+Change-Id: Ie18ab167635e6e099c3a12e03ea6620578c3103f
+Signed-off-by: Amit Aviram <aaviram@redhat.com>
+Reviewed-on: https://gerrit.ovirt.org/55199
+Continuous-Integration: Jenkins CI
+Reviewed-by: Nir Soffer <nsoffer@redhat.com>
+(cherry picked from commit 435139d67afb476b1bf6067a4321361922681d53)
+---
+ vdsm/API.py                  |  7 ++++---
+ vdsm/rpc/bindingxmlrpc.py    |  5 +++--
+ vdsm/rpc/vdsmapi-schema.json | 10 ++++++++--
+ vdsm/storage/hsm.py          |  8 ++++++--
+ 4 files changed, 21 insertions(+), 9 deletions(-)
+
+diff --git a/vdsm/API.py b/vdsm/API.py
+index 9e44002..eebe83a 100644
+--- a/vdsm/API.py
++++ b/vdsm/API.py
+@@ -952,9 +952,10 @@ class Image(APIBase):
+         return self._irs.downloadImage(
+             methodArgs, self._spUUID, self._sdUUID, self._UUID, volumeID)
+ 
+-    def prepare(self, volumeID):
+-        return self._irs.prepareImage(
+-            self._sdUUID, self._spUUID, self._UUID, volumeID)
++    def prepare(self, volumeID, allowIllegal=False):
++        return self._irs.prepareImage(self._sdUUID, self._spUUID,
++                                      self._UUID, volumeID,
++                                      allowIllegal=allowIllegal)
+ 
+     def teardown(self, volumeID=None):
+         return self._irs.teardownImage(
+diff --git a/vdsm/rpc/bindingxmlrpc.py b/vdsm/rpc/bindingxmlrpc.py
+index acb3bbd..aeaf67f 100644
+--- a/vdsm/rpc/bindingxmlrpc.py
++++ b/vdsm/rpc/bindingxmlrpc.py
+@@ -782,9 +782,10 @@ class BindingXMLRPC(object):
+         image = API.Image(imgUUID, spUUID, sdUUID)
+         return image.download(methodArgs, volUUID)
+ 
+-    def imagePrepare(self, spUUID, sdUUID, imgUUID, volUUID):
++    def imagePrepare(self, spUUID, sdUUID, imgUUID, volUUID,
++                     allowIllegal=False):
+         image = API.Image(imgUUID, spUUID, sdUUID)
+-        return image.prepare(volUUID)
++        return image.prepare(volUUID, allowIllegal)
+ 
+     def imageTeardown(self, spUUID, sdUUID, imgUUID, volUUID=None):
+         image = API.Image(imgUUID, spUUID, sdUUID)
+diff --git a/vdsm/rpc/vdsmapi-schema.json b/vdsm/rpc/vdsmapi-schema.json
+index c480cdb..149f74e 100644
+--- a/vdsm/rpc/vdsmapi-schema.json
++++ b/vdsm/rpc/vdsmapi-schema.json
+@@ -5295,6 +5295,11 @@
+ #
+ # @volumeID:         The UUID of the Volume
+ #
++# @allowIllegal:     #optional False by default. If set to True, prepare will
++#                    succeed even if any of the image volumes are illegal,
++#                    for making the volume writable by untrusted source.
++#                    Never use this when exposing the volume's image to a vm!
++#
+ # Returns:
+ # Information about prepared image
+ # (new in version 4.18)
+@@ -5303,8 +5308,9 @@
+ ##
+ {'command': {'class': 'Image', 'name': 'prepare'},
+  'data': {'storagepoolID': 'UUID', 'storagedomainID': 'UUID',
+-          'imageID': 'UUID', 'volumeID': 'UUID'}
+- 'returns': 'ImageInfo'}}
++          'imageID': 'UUID', 'volumeID': 'UUID',
++          '*allowIllegal': 'bool'},
++ 'returns': 'ImageInfo'}
+ 
+ ##
+ # @Image.teardown:
+diff --git a/vdsm/storage/hsm.py b/vdsm/storage/hsm.py
+index 6005026..c88b01d 100644
+--- a/vdsm/storage/hsm.py
++++ b/vdsm/storage/hsm.py
+@@ -3206,7 +3206,8 @@ class HSM(object):
+             self.log.error("Failed to remove the following rules: %s", fails)
+ 
+     @public
+-    def prepareImage(self, sdUUID, spUUID, imgUUID, leafUUID):
++    def prepareImage(self, sdUUID, spUUID, imgUUID, leafUUID,
++                     allowIllegal=False):
+         """
+         Prepare an image, activating the needed volumes.
+         Return the path to the leaf and an unsorted list of the image volumes.
+@@ -3237,7 +3238,10 @@ class HSM(object):
+         for volUUID in imgVolumes:
+             legality = dom.produceVolume(imgUUID, volUUID).getLegality()
+             if legality == volume.ILLEGAL_VOL:
+-                raise se.prepareIllegalVolumeError(volUUID)
++                if allowIllegal:
++                    self.log.info("Preparing illegal volume %s", leafUUID)
++                else:
++                    raise se.prepareIllegalVolumeError(volUUID)
+ 
+         imgPath = dom.activateVolumes(imgUUID, imgVolumes)
+         if spUUID and spUUID != sd.BLANK_UUID:
+-- 
+1.9.3
+

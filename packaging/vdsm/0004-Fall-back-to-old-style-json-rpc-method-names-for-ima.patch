@@ -1,0 +1,116 @@
+From 5f109b167c728633be7b3aae74ad33052c038ac6 Mon Sep 17 00:00:00 2001
+From: walteryang <walteryang47@users.noreply.github.com>
+Date: Sat, 30 Apr 2016 08:51:35 -0400
+Subject: [PATCH 4/4] Fall back to old style json-rpc method names for image
+ ticket api
+
+Because ba171f1d3e9fcbebad0311480a28d4c5dfa53860 is not included
+
+Signed-off-by: walteryang <walteryang47@users.noreply.github.com>
+---
+ vdsm/API.py                  | 12 ++++++------
+ vdsm/rpc/vdsmapi-schema.json | 12 ++++++------
+ vdsm/storage/hsm.py          |  6 +++---
+ 3 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/vdsm/API.py b/vdsm/API.py
+index eebe83a..cd6eff7 100644
+--- a/vdsm/API.py
++++ b/vdsm/API.py
+@@ -1764,14 +1764,14 @@ class Global(APIBase):
+             return errCode['haErr']
+         return {'status': doneCode}
+ 
+-    def add_image_ticket(self, ticket):
+-        return self._irs.add_image_ticket(ticket)
++    def addImageTicket(self, ticket):
++        return self._irs.addImageTicket(ticket)
+ 
+-    def remove_image_ticket(self, uuid):
+-        return self._irs.remove_image_ticket(uuid)
++    def removeImageTicket(self, uuid):
++        return self._irs.removeImageTicket(uuid)
+ 
+-    def extend_image_ticket(self, uuid, timeout):
+-        return self._irs.extend_image_ticket(uuid, timeout)
++    def extendImageTicket(self, uuid, timeout):
++        return self._irs.extendImageTicket(uuid, timeout)
+ 
+     # take a rough estimate on how much free mem is available for new vm
+     # memTotal = memFree + memCached + mem_used_by_non_qemu + resident  .
+diff --git a/vdsm/rpc/vdsmapi-schema.json b/vdsm/rpc/vdsmapi-schema.json
+index 149f74e..50739af 100644
+--- a/vdsm/rpc/vdsmapi-schema.json
++++ b/vdsm/rpc/vdsmapi-schema.json
+@@ -627,7 +627,7 @@
+           'size': 'uint', 'url': 'str'}}
+ 
+ ##
+-# @Host.add_image_ticket:
++# @Host.addImageTicket:
+ #
+ # Start a session to expose an image via imaged daemon https api for
+ # reading and writing image data.
+@@ -636,11 +636,11 @@
+ #
+ # Since: 4.18.0
+ ##
+-{'command': {'class': 'Host', 'name': 'add_image_ticket'},
++{'command': {'class': 'Host', 'name': 'addImageTicket'},
+  'data': {'ticket': 'ImageTicket'}}
+ 
+ ##
+-# @Host.remove_image_ticket:
++# @Host.removeImageTicket:
+ #
+ # Stop an image upload data transfer session.
+ #
+@@ -648,11 +648,11 @@
+ #
+ # Since: 4.18.0
+ ##
+-{'command': {'class': 'Host', 'name': 'remove_image_ticket'},
++{'command': {'class': 'Host', 'name': 'removeImageTicket'},
+  'data': {'uuid': 'UUID'}}
+ 
+ ##
+-# @Host.extend_image_ticket:
++# @Host.extendImageTicket:
+ #
+ # Extend an image upload data transfer session.
+ #
+@@ -662,7 +662,7 @@
+ #
+ # Since: 4.18.0
+ ##
+-{'command': {'class': 'Host', 'name': 'extend_image_ticket'},
++{'command': {'class': 'Host', 'name': 'extendImageTicket'},
+  'data': {'uuid': 'UUID', 'timeout': 'uint'}}
+ 
+ 
+diff --git a/vdsm/storage/hsm.py b/vdsm/storage/hsm.py
+index c88b01d..d32c0d4 100644
+--- a/vdsm/storage/hsm.py
++++ b/vdsm/storage/hsm.py
+@@ -3104,15 +3104,15 @@ class HSM(object):
+                                          volUUID=volUUID).refreshVolume()
+ 
+     @public
+-    def add_image_ticket(self, ticket):
++    def addImageTicket(self, ticket):
+         imagetickets.add_ticket(ticket)
+ 
+     @public
+-    def remove_image_ticket(self, uuid):
++    def removeImageTicket(self, uuid):
+         imagetickets.remove_ticket(uuid)
+ 
+     @public
+-    def extend_image_ticket(self, uuid, timeout):
++    def extendImageTicket(self, uuid, timeout):
+         imagetickets.extend_ticket(uuid, timeout)
+ 
+     @public
+-- 
+1.9.3
+
