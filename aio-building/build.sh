@@ -18,7 +18,7 @@ then
   rm -rfv $BUILD_DIR_NAME
   mkdir -p $BUILD_DIR_NAME
   REPO_PARAM=""
-  for i in "${arr[@]}"
+  for i in "${ISO_BUILD_REPOS[@]}"
   do
     REPO_PARAM=$REPO_PARAM" -s $i"
   done
