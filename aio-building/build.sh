@@ -16,7 +16,6 @@ then
   echo "start building iso structure..."
   cd $WORKING_DIR
   rm -rfv $BUILD_DIR_NAME
-  mkdir -p $BUILD_DIR_NAME
   REPO_PARAM=""
   for i in "${ISO_BUILD_REPOS[@]}"
   do
