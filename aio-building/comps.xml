@@ -9,10 +9,8 @@
       <groupid>core</groupid>
       <groupid>anaconda-tools</groupid>
       <groupid>eayunos-base-system</groupid>
-    </grouplist>
-    <optionlist>
       <groupid>eayunos-management-system</groupid>
-    </optionlist>
+    </grouplist>
   </environment>
   <group>
     <id>core</id>
