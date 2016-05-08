@@ -505,6 +505,7 @@
       <packagereq type="mandatory">screen</packagereq> 
       <packagereq type="mandatory">python-urwid</packagereq> 
       <packagereq type="mandatory">python-psutil</packagereq> 
+      <packagereq type="mandatory">eayunos-console-node</packagereq> 
     </packagelist>
   </group>
   <group>
