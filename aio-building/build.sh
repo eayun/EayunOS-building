@@ -32,9 +32,11 @@ then
   rm -rfv $BUILD_DIR_NAME/Packages
   rm -rfv $BUILD_DIR_NAME/repodata
   mkdir -p $BUILD_DIR_NAME/Packages
-  echo "back up rpmdb..."
-  rm -rf /var/lib/rpm.bak
-  mv -v /var/lib/rpm{,.bak}
+  if [ ! -d "/var/lib/rpm.bak" ]
+  then
+    echo "back up rpmdb..."
+    mv -v /var/lib/rpm{,.bak}
+  fi
   yum clean metadata
   yum makecache
   echo "downloading packages..."
