@@ -1,6 +1,6 @@
 repo = vdsm
 package = vdsm
-version = 4.16.7
+version = 4.17.28
 
 sources:
 	cd ../../ ;\
