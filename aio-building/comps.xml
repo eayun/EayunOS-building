@@ -506,6 +506,8 @@
       <packagereq type="mandatory">python-urwid</packagereq> 
       <packagereq type="mandatory">python-psutil</packagereq> 
       <packagereq type="mandatory">eayunos-console-node</packagereq> 
+      <packagereq type="mandatory">ovirt-imageio-daemon</packagereq> 
+      <packagereq type="mandatory">ovirt-imageio-common</packagereq> 
     </packagelist>
   </group>
   <group>
