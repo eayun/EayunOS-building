@@ -56,11 +56,9 @@ then
   rm -rfv $BUILD_DIR_NAME/ks
   cp -rv iso_files/ks $BUILD_DIR_NAME
   yes|cp -v iso_files/isolinux.cfg $BUILD_DIR_NAME/isolinux/
-  rm -fv isobuild/images/product.img
-  rm -rfv product
-  mkdir product
-  cp -rv iso_files/branding product
-  find . | cpio -c -o | gzip -9cv > isobuild/images/product.img
+  cd iso_files/branding
+  find . | cpio -c -o | gzip -9cv > ../../isobuild/images/product.img
+  cd ../../
   mkisofs -q -r -R -J -T -no-emul-boot -boot-load-size 4 \
       -b isolinux/isolinux.bin -boot-info-table \
       -V $PRODUCT_NAME -A "$PRODUCT_NAME $DATESTRING $ARCH DVD" \
