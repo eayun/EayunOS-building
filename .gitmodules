@@ -22,3 +22,6 @@
 [submodule "packaging/anaconda/upstream"]
 	path = packaging/anaconda/upstream
 	url = https://github.com/rhinstaller/anaconda.git
+[submodule "packaging/ovirt-imageio/upstream"]
+	path = packaging/ovirt-imageio/upstream
+	url = https://github.com/oVirt/ovirt-imageio.git
