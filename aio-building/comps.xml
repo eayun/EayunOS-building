@@ -490,6 +490,7 @@
       <packagereq type="mandatory">unzip</packagereq> 
       <packagereq type="mandatory">urw-fonts</packagereq> 
       <packagereq type="mandatory">usbredir</packagereq> 
+      <packagereq type="mandatory">pciutils</packagereq> 
       <packagereq type="mandatory">vdsm</packagereq> 
       <packagereq type="mandatory">vdsm-cli</packagereq> 
       <packagereq type="mandatory">vdsm-hook-vmfex-dev</packagereq> 
