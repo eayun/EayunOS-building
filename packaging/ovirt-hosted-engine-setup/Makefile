@@ -1,14 +1,14 @@
 repo = ovirt-hosted-engine-setup
 package = ovirt-hosted-engine-setup
-version = 1.2.2-0.0.master
+version = 1.3.6.1
 
 sources:
 	cd ../../ ;\
 		git submodule init packaging/$(repo)/upstream ;\
 		git submodule update packaging/$(repo)/upstream ;\
 	cd packaging/$(repo)/upstream ;\
-	git config user.name "Zhao Chao" ;\
-	git config user.email "chao.zhao@eayun.com" ;\
+	git config user.name "Pan Liyang" ;\
+	git config user.email "liyang.pan@eayun.com" ;\
 	cd ..; \
 	for file in *.patch; do \
 		if [ -f $$file ]; then \

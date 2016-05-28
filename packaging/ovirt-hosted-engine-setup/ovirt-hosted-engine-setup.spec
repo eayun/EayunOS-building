@@ -1,6 +1,6 @@
 #
 # ovirt-hosted-engine-setup -- ovirt hosted engine setup
-# Copyright (C) 2013-2014 Red Hat, Inc.
+# Copyright (C) 2013-2016 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,56 +18,81 @@
 #
 
 %global         engine ovirt-engine
-%global         package_version 1.2.2-0.0.master
+%global         package_version 1.3.6.1
 %global         ovirt_hosted_engine_setup_templates %{_datadir}/%{name}/templates
 %global         ovirt_hosted_engine_setup_scripts %{_datadir}/%{name}/scripts
 %global         vdsmhooksdir %{_libexecdir}/vdsm/hooks
-
-%define dist_eayunos .eayunos.4.1
+%global         gluster_hc_available 0
 
 
 Summary:        oVirt Hosted Engine setup tool
 Name:           ovirt-hosted-engine-setup
-Version:        1.2.2
-Release:        6%{?dist_eayunos}
+Version:        1.3.6.1
+Release:        1%{?release_suffix}%{?dist}
 License:        LGPLv2+
 URL:            http://www.ovirt.org
-Source:         http://resources.ovirt.org/pub/ovirt-3.5-snapshot/src/%{name}/%{name}-%{package_version}.tar.gz
+Source0:        http://resources.ovirt.org/pub/ovirt-3.6/src/%{name}/%{name}-%{package_version}.tar.gz
 Group:          Applications/System
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
+
+Requires:       bind-utils
+Requires:       genisoimage
+Requires:       iptables
+Requires:       iptables-services
+Requires:       libselinux-python
+Requires:       lsof
+Requires:       openssh-server
+Requires:       openssl
 Requires:       python
 Requires:       python-ethtool >= 0.6-3
-Requires:       otopi >= 1.3.0
-Requires:       vdsm >= 4.16.7
-Requires:       vdsm-cli >= 4.16.7
-Requires:       vdsm-python >= 4.16.7
-Requires:       ovirt-host-deploy >= 1.3.0
-Requires:       openssh-server
-Requires:       python-paramiko
-Requires:       virt-viewer
-Requires:       openssl
-Requires:       sudo
-Requires:       bind-utils
-Requires:       ovirt-hosted-engine-ha >= 1.2.4
+Requires:       python-netaddr
 Requires:       sanlock >= 2.8
 Requires:       sanlock-python >= 2.8
-Requires:       lsof
-Requires:       iptables
+Requires:       sudo
+Requires:       virt-viewer
 BuildRequires:  gettext
 BuildRequires:  python2-devel
-
-Requires:       %{engine}-sdk-python >= 3.5.0.7
 
 %if 0%{?fedora}
 Requires:       qemu-img
 %endif
-
 %if 0%{?rhel}
-Requires:       qemu-img-rhev >= 0.12.1.2-2.415
+Requires:       qemu-img-rhev
 %endif
+
+
+Requires:       otopi >= 1.4.0
+Requires:       ovirt-host-deploy >= 1.4.1
+Requires:       ovirt-hosted-engine-ha >= 1.3.5.4
+Requires:       %{engine}-sdk-python >= 3.6.3.0
+Requires:       ovirt-setup-lib >= 1.0.1
+Requires:       glusterfs-cli >= 3.7.2
+Requires:       vdsm >= 4.17.28
+Requires:       vdsm-cli >= 4.17.28
+Requires:       vdsm-python >= 4.17.28
+
+
+%if %{gluster_hc_available}
+Requires:       vdsm-gluster >= 4.17.28
+Requires:       glusterfs-server >= 3.7.2
+%endif
+
+
+# Dependencies that will be required by ovirt-host-deploy
+# avoiding to have them installed in the middle of the setup
+Requires:       dmidecode
+Requires:       iproute
+Requires:       kexec-tools
+Requires:       m2crypto
+Requires:       ovirt-vmconsole-host
+Requires:       qemu-kvm-tools
+Requires:       socat
+Requires:       tar
+Requires:       tuned
+Requires:       util-linux
 
 %description
 Hosted Engine setup tool for oVirt project.
@@ -104,44 +129,107 @@ make %{?_smp_mflags} install DESTDIR="%{buildroot}"
 %{vdsmhooksdir}/before_vm_start/
 
 %changelog
-* Mon Dec 22 2014 Zhao Chao <chao.zhao@eayun.com> - 1.2.2-6.eayunos.4.1
-- fix lvchange patch, use it only for ISCSI storage backend.
+* Wed May 04 2016 Simone Tiraboschi <stirabos@redhat.com> - 1.3.6.1-1
+- 1.3.6.1-1
 
-* Sat Dec 20 2014 Zhao Chao <chao.zhao@eayun.com> - 1.2.2-5.eayunos.4.1
-- fix iscsi backend with appliance setup.
-- change eayunosmgmt as the default bridge name.
+* Tue Apr 26 2016 Simone Tiraboschi <stirabos@redhat.com> - 1.3.6.1-0.0.master
+- 1.3.6.1-0.0.master
 
-* Tue Dec 09 2014 Zhao Chao <chao.zhao@eayun.com> - 1.2.2-4.eayunos.4.1
-- merge upstream commits, to 25852b53aae591de88aff8a26c0c0a85a4e66a0e,
-  as host name collision bug now is fixed by upstream commit, drop our
-  own patch.
+* Tue Apr 26 2016 Simone Tiraboschi <stirabos@redhat.com> - 1.3.6.0-1
+- 1.3.6.0-1
 
-* Tue Nov 27 2014 Zhao Chao <chao.zhao@eayun.com> - 1.2.2-3.eayunos.4.1
-- avoid host name collision, reapply commmit
-  1f55418e60e667c9da04b8dd21e678fb634a8813. this is a regression bug,
-  introduced by commit a294fdfc7a410aadb6fd1c72594989e2f3ef1a26.
+* Tue Mar 29 2016 Simone Tiraboschi <stirabos@redhat.com> - 1.3.5.1-0.0.master
+- 1.3.5.1-0.0.master
 
-* Tue Nov 25 2014 Zhao Chao <chao.zhao@eayun.com> - 1.2.2-2.eayunos.4.1
-- core/remote_answerfile: don't check CONFIG_FILE_APPEND.
+* Tue Mar 29 2016 Simone Tiraboschi <stirabos@redhat.com> - 1.3.5.0-1
+- 1.3.5.0-1
 
-* Tue Nov 25 2014 Zhao Chao <chao.zhao@eayun.com> - 1.2.2-1.eayunos.4.1
-- use origin/ovirt-hosted-engine-setup-1.2 branch, commit id:
-  c85743bfb0a51346112c8ee18e0b5e3581988ce5.
+* Tue Mar 15 2016 Simone Tiraboschi <stirabos@redhat.com> - 1.3.4.1-0.0.master
+- 1.3.4.1-0.0.master
 
-* Fri Oct  3 2014 Sandro Bonazzola <sbonazzo@redhat.com> - 1.2.2-0.0.master
-- 1.2.2-0.0.master
+* Tue Mar 15 2016 Simone Tiraboschi <stirabos@redhat.com> - 1.3.4.0-1
+- 1.3.4.0-1
 
-* Thu Oct  2 2014 Sandro Bonazzola <sbonazzo@redhat.com> - 1.2.1-1
-- 1.2.1-1
+* Tue Feb 23 2016 Rafael Martins <rmartins@redhat.com> - 1.3.3.5-0.0.master
+- 1.3.3.5-0.0.master
 
-* Mon Sep 22 2014 Sandro Bonazzola <sbonazzo@redhat.com> - 1.2.0-1
-- 1.2.0-1
+* Tue Feb 23 2016 Rafael Martins <rmartins@redhat.com> - 1.3.3.4-1
+- 1.3.3.4-1
 
-* Fri Sep 12 2014 Sandro Bonazzola <sbonazzo@redhat.com> - 1.2.0-0.2.master
-- 1.2.0-0.2.master
+* Wed Feb 17 2016 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.3.4-0.0.master
+- 1.3.3.4-0.0.master
 
-* Fri Jul 11 2014 Sandro Bonazzola <sbonazzo@redhat.com> - 1.2.0-0.1.master
-- 1.2.0-0.1.master
+* Wed Feb 17 2016 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.3.3-1
+- 1.3.3.3-1
 
-* Fri Jan 17 2014 Sandro Bonazzola <sbonazzo@redhat.com> - 1.2.0-0.0.master
-- 1.2.0-0.0.master
+* Tue Feb 16 2016 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.3.3-0.0.master
+- 1.3.3.3-0.0.master
+
+* Tue Feb 16 2016 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.3.2-1
+- 1.3.3.2-1
+
+* Tue Feb  9 2016 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.3.2-0.0.master
+- 1.3.3.2-0.0.master
+
+* Tue Feb  9 2016 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.3.1-1
+- 1.3.3.1-1
+
+* Wed Jan 27 2016 Simone Tiraboschi <stirabos@redhat.com> - 1.3.3.1-0.0.master
+- 1.3.3.1-0.0.master
+
+* Wed Jan 27 2016 Simone Tiraboschi <stirabos@redhat.com> - 1.3.3.0-1
+- 1.3.3.0-1
+
+* Tue Jan 19 2016 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.2.4-0.0.master
+- 1.3.2.4-0.0.master
+
+* Tue Jan 19 2016 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.2.3-1
+- 1.3.2.3-1
+
+* Tue Jan 12 2016 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.2.3-0.0.master
+- 1.3.2.3-0.0.master
+
+* Tue Jan 12 2016 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.2.2-2
+- Updated deps
+
+* Tue Jan 05 2016 Simone Tiraboschi <stirabos@redhat.com> - 1.3.2.2-1
+- 1.3.2.2-1
+
+* Wed Dec 23 2015 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.2.2-0.0.master
+- 1.3.2.2-0.0.master
+
+* Wed Dec 23 2015 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.2.1-1
+- 1.3.2.1-1
+
+* Tue Dec 22 2015 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.2.1-0.0.master
+- 1.3.2.1-0.0.master
+
+* Tue Dec 22 2015 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.2-1
+- 1.3.2-1
+
+* Wed Dec  9 2015 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.2-0.0.master
+- 1.3.2-0.0.master
+
+* Wed Dec  9 2015 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.1.2-1
+- 1.3.1.2-1
+
+* Tue Dec  1 2015 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.1.2-0.0.master
+- 1.3.1.2-0.0.master
+
+* Tue Dec  1 2015 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.1.1-1
+- 1.3.1.1-1
+
+* Tue Nov 24 2015 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.1.1-0.0.master
+- 1.3.1.1-0.0.master
+
+* Tue Nov 24 2015 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.1-1
+- 1.3.1-1
+
+* Tue Oct  6 2015 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.1-0.0.master
+- 1.3.1-0.0.master
+
+* Thu Sep 24 2015 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.0-1
+- 1.3.0-1
+
+* Fri Jul 11 2014 Sandro Bonazzola <sbonazzo@redhat.com> - 1.3.0-0.0.master
+- 1.3.0-0.0.master
