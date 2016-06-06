@@ -26,12 +26,12 @@ index 5cb4682..e91a03e 100644
 --A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 --A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
 +# vdsm
-+-A INPUT -p tcp --dport @VDSM_PORT@ -j ACCEPT
++-A INPUT -p tcp --dport 54321 -j ACCEPT
 +# rpc.statd
 +-A INPUT -p tcp --dport 111 -j ACCEPT
 +-A INPUT -p udp --dport 111 -j ACCEPT
 +# SSH
-+-A INPUT -p tcp --dport @SSH_PORT@ -j ACCEPT
++-A INPUT -p tcp --dport 22 -j ACCEPT
 +# snmp
 +-A INPUT -p udp --dport 161 -j ACCEPT
 +# Cockpit
