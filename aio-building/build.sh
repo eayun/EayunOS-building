@@ -2,8 +2,8 @@ BUILD_DIR_NAME="isobuild"
 ISO_DIR_NAME="EayunOS-iso"
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PRODUCT_NAME="EayunOS"
-VERSION="4.2"
-RELEASE="0"
+VERSION="4.2.0"
+TEST_RELEASE="1"
 PUBLISHER=Eayun
 DATESTRING=`date '+%Y%m%d%H%M%S'`
 ARCH=`uname -m`
@@ -21,7 +21,7 @@ then
   do
     REPO_PARAM=$REPO_PARAM" -s $i"
   done
-  lorax --version $VERSION --product $PRODUCT_NAME --release $RELEASE --isfinal \
+  lorax --version $VERSION --product $PRODUCT_NAME --release $TEST_RELEASE --isfinal \
       $REPO_PARAM $BUILD_DIR_NAME
 fi
 
@@ -63,6 +63,6 @@ then
       -b isolinux/isolinux.bin -boot-info-table \
       -V $PRODUCT_NAME -A "$PRODUCT_NAME $DATESTRING $ARCH DVD" \
       -publisher "$PUBLISHER"  -p "$PUBLISHER" \
-      -o $PRODUCT_NAME-$VERSION-$RELEASE-$DATESTRING-$ARCH-DVD.iso \
+      -o $PRODUCT_NAME-$VERSION-$TEST_RELEASE-$DATESTRING-$ARCH-DVD.iso \
       $BUILD_DIR_NAME
 fi
