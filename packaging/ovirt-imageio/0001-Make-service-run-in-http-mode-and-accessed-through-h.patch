@@ -1,0 +1,74 @@
+From 5eb42fe985b036f7b210d7ce536a488eece5a733 Mon Sep 17 00:00:00 2001
+From: walteryang47 <walteryang47@users.noreply.github.com>
+Date: Tue, 7 Jun 2016 02:20:40 -0400
+Subject: [PATCH] Make service run in http mode and accessed through httpd
+ proxy
+
+Signed-off-by: walteryang47 <walteryang47@users.noreply.github.com>
+---
+ proxy/data/ovirt-imageio-proxy.conf   | 12 ++++++++++++
+ proxy/data/z-ovirt-imageio-proxy.conf | 10 ++++++++++
+ proxy/ovirt-imageio-proxy.spec.in     |  4 ++++
+ 3 files changed, 26 insertions(+)
+ create mode 100644 proxy/data/ovirt-imageio-proxy.conf
+ create mode 100644 proxy/data/z-ovirt-imageio-proxy.conf
+
+diff --git a/proxy/data/ovirt-imageio-proxy.conf b/proxy/data/ovirt-imageio-proxy.conf
+new file mode 100644
+index 0000000..4c722e7
+--- /dev/null
++++ b/proxy/data/ovirt-imageio-proxy.conf
+@@ -0,0 +1,12 @@
++[proxy]
++# Listening port
++port = 54323
++
++# Wrap incoming connections with SSL
++use_ssl = false
++
++# Certificate file used when decoding signed token
++engine_cert_file = /etc/pki/ovirt-engine/certs/engine.cer
++
++# Verify the certificate used to decode the signed token
++verify_certificate = false
+diff --git a/proxy/data/z-ovirt-imageio-proxy.conf b/proxy/data/z-ovirt-imageio-proxy.conf
+new file mode 100644
+index 0000000..9112a16
+--- /dev/null
++++ b/proxy/data/z-ovirt-imageio-proxy.conf
+@@ -0,0 +1,10 @@
++<IfModule proxy_ajp_module>
++
++    <Location /images>
++        ProxyPassMatch http://127.0.0.1:54323 timeout=3600 retry=5
++        <IfModule deflate_module>
++            AddOutputFilterByType DEFLATE text/javascript text/css text/html text/xml text/json application/xml application/json application/x-yaml
++        </IfModule>
++    </Location>
++
++</IfModule>
+diff --git a/proxy/ovirt-imageio-proxy.spec.in b/proxy/ovirt-imageio-proxy.spec.in
+index 88a1db5..6d35b0f 100644
+--- a/proxy/ovirt-imageio-proxy.spec.in
++++ b/proxy/ovirt-imageio-proxy.spec.in
+@@ -48,6 +48,8 @@ install -dDm 0700 %{buildroot}%{proxy_logdir}
+ install -Dm 0640 data/ovirt-imageio-proxy.conf.sample %{buildroot}%{proxy_confdir}
+ install -Dm 0640 data/logger.conf %{buildroot}%{proxy_confdir}
+ install -Dm 0644 data/ovirt-imageio-proxy.service %{buildroot}%{_unitdir}/ovirt-imageio-proxy.service
++install -Dm 0644 data/z-ovirt-imageio-proxy.conf %{buildroot}/etc/httpd/conf.d/z-ovirt-imageio-proxy.conf
++install -Dm 0644 data/ovirt-imageio-proxy.conf %{buildroot}/etc/ovirt-imageio-proxy/ovirt-imageio-proxy.conf
+ 
+ 
+ %clean
+@@ -64,6 +66,8 @@ make clean
+ %{_bindir}/ovirt-imageio-proxy
+ %dir %{proxy_logdir}
+ %{python_sitelib}/*
++/etc/httpd/conf.d/z-ovirt-imageio-proxy.conf
++/etc/ovirt-imageio-proxy/ovirt-imageio-proxy.conf
+ 
+ 
+ # For more information about the systemd macros, see:
+-- 
+1.8.3.1
+
