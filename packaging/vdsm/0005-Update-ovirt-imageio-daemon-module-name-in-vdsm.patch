@@ -1,0 +1,32 @@
+From fb27cfd14740920a77314f0370aec4eb4bc65001 Mon Sep 17 00:00:00 2001
+From: walteryang47 <walteryang47@users.noreply.github.com>
+Date: Tue, 7 Jun 2016 02:48:16 -0400
+Subject: [PATCH] Update ovirt imageio daemon module name in vdsm
+
+Signed-off-by: walteryang47 <walteryang47@users.noreply.github.com>
+---
+ vdsm/storage/imagetickets.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/vdsm/storage/imagetickets.py b/vdsm/storage/imagetickets.py
+index 62ada7d..112cf1b 100644
+--- a/vdsm/storage/imagetickets.py
++++ b/vdsm/storage/imagetickets.py
+@@ -31,12 +31,12 @@ from vdsm import constants
+ import storage_exception as se
+ 
+ try:
+-    from ovirt_image_daemon import uhttp
++    from ovirt_imageio_daemon import uhttp
+     _have_image_daemon = True
+ except ImportError:
+     _have_image_daemon = False
+ 
+-DAEMON_SOCK = os.path.join(constants.P_VDSM_RUN, "ovirt-image-daemon.sock")
++DAEMON_SOCK = os.path.join(constants.P_VDSM_RUN, "ovirt-imageio-daemon.sock")
+ 
+ log = logging.getLogger('storage.imagetickets')
+ 
+-- 
+1.8.3.1
+
