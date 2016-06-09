@@ -1,0 +1,26 @@
+From 7e218093064b8ef9595c628642758d056817c00c Mon Sep 17 00:00:00 2001
+From: walteryang47 <walteryang47@users.noreply.github.com>
+Date: Thu, 9 Jun 2016 13:07:53 -0400
+Subject: [PATCH] Make service start at later stage of boot
+
+The workaround is start this service after sshd service started
+
+Signed-off-by: walteryang47 <walteryang47@users.noreply.github.com>
+---
+ daemon/data/ovirt-imageio-daemon.service | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/daemon/data/ovirt-imageio-daemon.service b/daemon/data/ovirt-imageio-daemon.service
+index c51ff27..2641df4 100644
+--- a/daemon/data/ovirt-imageio-daemon.service
++++ b/daemon/data/ovirt-imageio-daemon.service
+@@ -1,5 +1,6 @@
+ [Unit]
+ Description=oVirt ImageIO Daemon
++After=sshd.service
+ 
+ [Service]
+ Type=notify
+-- 
+1.8.3.1
+
