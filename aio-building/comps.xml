@@ -604,6 +604,7 @@
       <packagereq type="mandatory">python2-iso8601</packagereq> 
       <packagereq type="mandatory">pytz</packagereq> 
       <packagereq type="mandatory">saslwrapper</packagereq> 
+      <packagereq type="mandatory">vdsm-hook-macspoof</packagereq>
     </packagelist>
   </group>
 </comps>
