@@ -1,0 +1,52 @@
+From b36137c0b4bfb7269188f05ff74e23a03baeb078 Mon Sep 17 00:00:00 2001
+From: root <root@localhost.localdomain>
+Date: Fri, 17 Jun 2016 10:46:39 +0800
+Subject: [PATCH] update
+
+---
+ Makefile             | 2 +-
+ win-guest-tools.nsis | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 94bf433..4b32673 100644
+--- a/Makefile
++++ b/Makefile
+@@ -4,7 +4,7 @@ DISPLAYED_VERSION=$(VERSION)
+ ARCHIVE=$(NAME)-$(VERSION).tar.bz2
+ 
+ # set to OVIRT to build the ovirt guest tools installer
+-MODE=SPICE
++MODE=OVIRT
+ 
+ # Note: If you want to change the UN/INSTALLER name, you
+ # have to edit also the nsis source.
+diff --git a/win-guest-tools.nsis b/win-guest-tools.nsis
+index fc00953..e57b626 100644
+--- a/win-guest-tools.nsis
++++ b/win-guest-tools.nsis
+@@ -263,17 +263,17 @@ Function GetDriverSubdir
+    ${ElseIf} ${IsWin7}
+       StrCpy $0 "$0\w7"
+    ${ElseIf} ${IsWin2008}
+-      StrCpy $0 "$0\w2k8"
++      StrCpy $0 "$0\2k8"
+    ${ElseIf} ${IsWin2008R2}
+-      StrCpy $0 "$0\w2k8R2"
++      StrCpy $0 "$0\2k8R2"
+    ${ElseIf} ${IsWin8}
+       StrCpy $0 "$0\w8"
+    ${ElseIf} ${IsWin2012}
+-      StrCpy $0 "$0\w2k12"
++      StrCpy $0 "$0\2k12"
+    ${ElseIf} ${IsWin8.1}
+       StrCpy $0 "$0\w8.1"
+    ${ElseIf} ${IsWin2012R2}
+-      StrCpy $0 "$0\w2k12r2"
++      StrCpy $0 "$0\2k12R2"
+    ${Else}
+       MessageBox MB_ICONEXCLAMATION "Unsupported Windows version"
+       Abort ; causes installer to quit.
+-- 
+2.5.5
+

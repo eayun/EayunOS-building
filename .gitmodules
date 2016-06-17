@@ -25,3 +25,6 @@
 [submodule "packaging/ovirt-imageio/upstream"]
 	path = packaging/ovirt-imageio/upstream
 	url = https://github.com/oVirt/ovirt-imageio.git
+[submodule "packaging/ovirt-wgt/upstream"]
+	path = packaging/ovirt-wgt/upstream
+	url = https://github.com/ovirt/ovirt-wgt.git
