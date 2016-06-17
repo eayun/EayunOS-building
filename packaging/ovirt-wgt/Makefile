@@ -12,6 +12,11 @@ sources:
 	git config user.name "Qili Lin" ;\
 	git config user.email "qili.lin@eayun.com" ;\
 	cd ..; \
+	# 从服务器获取驱动文件或手动导入驱动文件到当前目录
+	# wget http://source.net/bin-drivers.tar.gz
+	tar zxf bin-drivers.tar.gz
+	# drivers目录包含virtio,qxl驱动
+	# bin目录包含vdagent, OVirtGuestService.exe, vcredist_x86.exe
 	cp -r bin/ drivers/ upstream/
 	for file in *.patch; do \
 		if [ -f $$file ]; then \
