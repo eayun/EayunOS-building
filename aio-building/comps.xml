@@ -605,6 +605,7 @@
       <packagereq type="mandatory">pytz</packagereq> 
       <packagereq type="mandatory">saslwrapper</packagereq> 
       <packagereq type="mandatory">vdsm-hook-macspoof</packagereq>
+      <packagereq type="mandatory">neutron-appliance</packagereq>
     </packagelist>
   </group>
 </comps>
