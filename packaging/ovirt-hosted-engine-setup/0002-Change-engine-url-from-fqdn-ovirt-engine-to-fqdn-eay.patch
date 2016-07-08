@@ -1,4 +1,4 @@
-From f3ff89d25d67fad2fb61973cd61c04b9e8629f0e Mon Sep 17 00:00:00 2001
+From 33c9cae1daae382d3a7094de34544769be7416e0 Mon Sep 17 00:00:00 2001
 From: walteryang47 <walteryang47@gmail.com>
 Date: Fri, 8 Jul 2016 08:52:08 +0800
 Subject: [PATCH] Change engine url from {fqdn}/ovirt-engine to {fqdn}/eayunos
@@ -6,8 +6,9 @@ Subject: [PATCH] Change engine url from {fqdn}/ovirt-engine to {fqdn}/eayunos
 Signed-off-by: walteryang47 <walteryang47@gmail.com>
 ---
  src/ovirt_hosted_engine_setup/check_liveliness.py        | 2 +-
+ src/ovirt_hosted_engine_setup/pkissh.py                  | 2 +-
  src/plugins/ovirt-hosted-engine-setup/engine/add_host.py | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/src/ovirt_hosted_engine_setup/check_liveliness.py b/src/ovirt_hosted_engine_setup/check_liveliness.py
 index a7e1220..9e01de1 100644
@@ -22,6 +23,19 @@ index a7e1220..9e01de1 100644
              fqdn=fqdn,
          )
          isUp = False
+diff --git a/src/ovirt_hosted_engine_setup/pkissh.py b/src/ovirt_hosted_engine_setup/pkissh.py
+index 44b2e59..68c87da 100644
+--- a/src/ovirt_hosted_engine_setup/pkissh.py
++++ b/src/ovirt_hosted_engine_setup/pkissh.py
+@@ -46,7 +46,7 @@ class PKIHelper(base.Base):
+     _RESOURCE_CA = 'ca-certificate'
+     _RESOURCE_ENGINE = 'engine-certificate'
+     _PKI_RESOURCE_SERVLET_PATH_TEMPATE = (
+-        '/ovirt-engine/services/pki-resource?'
++        '/eayunos/services/pki-resource?'
+         'resource={resource}&format={format}'
+     )
+     _CA_PEM_CERT_PATH = _PKI_RESOURCE_SERVLET_PATH_TEMPATE.format(
 diff --git a/src/plugins/ovirt-hosted-engine-setup/engine/add_host.py b/src/plugins/ovirt-hosted-engine-setup/engine/add_host.py
 index 98d431f..0b2be5b 100644
 --- a/src/plugins/ovirt-hosted-engine-setup/engine/add_host.py
@@ -36,5 +50,5 @@ index 98d431f..0b2be5b 100644
                      ),
                      username='admin@internal',
 -- 
-1.9.3
+2.4.11
 
