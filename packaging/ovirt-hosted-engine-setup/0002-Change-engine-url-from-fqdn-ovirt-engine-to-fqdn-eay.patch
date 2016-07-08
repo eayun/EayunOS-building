@@ -1,0 +1,40 @@
+From f3ff89d25d67fad2fb61973cd61c04b9e8629f0e Mon Sep 17 00:00:00 2001
+From: walteryang47 <walteryang47@gmail.com>
+Date: Fri, 8 Jul 2016 08:52:08 +0800
+Subject: [PATCH] Change engine url from {fqdn}/ovirt-engine to {fqdn}/eayunos
+
+Signed-off-by: walteryang47 <walteryang47@gmail.com>
+---
+ src/ovirt_hosted_engine_setup/check_liveliness.py        | 2 +-
+ src/plugins/ovirt-hosted-engine-setup/engine/add_host.py | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/ovirt_hosted_engine_setup/check_liveliness.py b/src/ovirt_hosted_engine_setup/check_liveliness.py
+index a7e1220..9e01de1 100644
+--- a/src/ovirt_hosted_engine_setup/check_liveliness.py
++++ b/src/ovirt_hosted_engine_setup/check_liveliness.py
+@@ -163,7 +163,7 @@ class LivelinessChecker(base.Base):
+ 
+     def isEngineUp(self, fqdn):
+         self.logger.debug('Checking for Engine health status')
+-        health_url = 'http://{fqdn}/ovirt-engine/services/health'.format(
++        health_url = 'http://{fqdn}/eayunos/services/health'.format(
+             fqdn=fqdn,
+         )
+         isUp = False
+diff --git a/src/plugins/ovirt-hosted-engine-setup/engine/add_host.py b/src/plugins/ovirt-hosted-engine-setup/engine/add_host.py
+index 98d431f..0b2be5b 100644
+--- a/src/plugins/ovirt-hosted-engine-setup/engine/add_host.py
++++ b/src/plugins/ovirt-hosted-engine-setup/engine/add_host.py
+@@ -661,7 +661,7 @@ class Plugin(plugin.PluginBase):
+                 ]:
+                     insecure = True
+                 engine_api = self._ovirtsdk_api.API(
+-                    url='https://{fqdn}/ovirt-engine/api'.format(
++                    url='https://{fqdn}/eayunos/api'.format(
+                         fqdn=fqdn,
+                     ),
+                     username='admin@internal',
+-- 
+1.9.3
+
