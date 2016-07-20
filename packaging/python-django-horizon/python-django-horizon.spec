@@ -51,6 +51,7 @@ Patch0022: 0022-Add-missing-translation-for-the-downstream-theme-zh_.patch
 Patch0023: 0023-Horizon-login-page-contains-DOS-attack-mechanism.patch
 Patch0024: 0024-Pass-correct-project-ID-to-get-tenant_usages.patch
 Patch0025: 0025-LBaas-v1-Associate-Monitor-to-Pool-Fails.patch
+Patch0026: 0026-Hack-to-show-floating-ip-tab-for-use-by-EayunOS-vms.patch
 
 #
 # BuildArch needs to be located below patches in the spec file. Don't ask!

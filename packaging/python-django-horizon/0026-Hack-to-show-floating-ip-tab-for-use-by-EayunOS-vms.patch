@@ -1,0 +1,138 @@
+From f4f8475fb157723d7703e4c42cd4e4fcbe9e1643 Mon Sep 17 00:00:00 2001
+From: walteryang47 <walteryang47@gmail.com>
+Date: Sat, 16 Jul 2016 18:27:50 +0800
+Subject: [PATCH] Hack to show floating ip tab for use by EayunOS vms
+
+Signed-off-by: walteryang47 <walteryang47@gmail.com>
+---
+ openstack_dashboard/api/neutron.py                 |  7 +---
+ .../dashboards/project/access_and_security/tabs.py | 12 +-----
+ openstack_dashboard/usage/quotas.py                | 43 ----------------------
+ 3 files changed, 3 insertions(+), 59 deletions(-)
+
+diff --git a/openstack_dashboard/api/neutron.py b/openstack_dashboard/api/neutron.py
+index b8aa880..8f5e8d7 100644
+--- a/openstack_dashboard/api/neutron.py
++++ b/openstack_dashboard/api/neutron.py
+@@ -418,8 +418,6 @@ class FloatingIpManager(network_base.FloatingIpManager):
+     def list_targets(self):
+         tenant_id = self.request.user.tenant_id
+         ports = port_list(self.request, tenant_id=tenant_id)
+-        servers, has_more = nova.server_list(self.request)
+-        server_dict = SortedDict([(s.id, s.name) for s in servers])
+         reachable_subnets = self._get_reachable_subnets(ports)
+ 
+         targets = []
+@@ -428,13 +426,12 @@ class FloatingIpManager(network_base.FloatingIpManager):
+             if p.device_owner.startswith('network:'):
+                 continue
+             port_id = p.id
+-            server_name = server_dict.get(p.device_id)
+             for ip in p.fixed_ips:
+                 if ip['subnet_id'] not in reachable_subnets:
+                     continue
+-                target = {'name': '%s: %s' % (server_name, ip['ip_address']),
++                target = {'name': '%s: %s' % ('EayunOS vm', ip['ip_address']),
+                           'id': '%s_%s' % (port_id, ip['ip_address']),
+-                          'instance_id': p.device_id}
++                          'instance_id': 'Not visible'}
+                 targets.append(FloatingIpTarget(target))
+         return targets
+ 
+diff --git a/openstack_dashboard/dashboards/project/access_and_security/tabs.py b/openstack_dashboard/dashboards/project/access_and_security/tabs.py
+index d524a8a..30e44c5 100644
+--- a/openstack_dashboard/dashboards/project/access_and_security/tabs.py
++++ b/openstack_dashboard/dashboards/project/access_and_security/tabs.py
+@@ -80,7 +80,6 @@ class FloatingIPsTab(tabs.TableTab):
+     name = _("Floating IPs")
+     slug = "floating_ips_tab"
+     template_name = "horizon/common/_detail_table.html"
+-    permissions = ('openstack.services.compute',)
+ 
+     def get_floating_ips_data(self):
+         try:
+@@ -104,17 +103,8 @@ class FloatingIPsTab(tabs.TableTab):
+                              _('Unable to retrieve floating IP pools.'))
+         pool_dict = dict([(obj.id, obj.name) for obj in floating_ip_pools])
+ 
+-        instances = []
+-        try:
+-            instances, has_more = nova.server_list(self.request)
+-        except Exception:
+-            exceptions.handle(self.request,
+-                        _('Unable to retrieve instance list.'))
+-
+-        instances_dict = dict([(obj.id, obj.name) for obj in instances])
+-
+         for ip in floating_ips:
+-            ip.instance_name = instances_dict.get(ip.instance_id)
++            ip.instance_name = 'Managed by EayunOS'
+             ip.pool_name = pool_dict.get(ip.pool, ip.pool)
+ 
+         return floating_ips
+diff --git a/openstack_dashboard/usage/quotas.py b/openstack_dashboard/usage/quotas.py
+index c51aed0..72678b9 100644
+--- a/openstack_dashboard/usage/quotas.py
++++ b/openstack_dashboard/usage/quotas.py
+@@ -139,7 +139,6 @@ def _get_quota_data(request, method_name, disabled_quotas=None,
+     quotasets = []
+     if not tenant_id:
+         tenant_id = request.user.tenant_id
+-    quotasets.append(getattr(nova, method_name)(request, tenant_id))
+     qs = base.QuotaSet()
+     if disabled_quotas is None:
+         disabled_quotas = get_disabled_quotas(request)
+@@ -233,50 +232,8 @@ def tenant_quota_usages(request, tenant_id=None):
+             floating_ips = network.tenant_floating_ip_list(request)
+     except Exception:
+         pass
+-    flavors = dict([(f.id, f) for f in nova.flavor_list(request)])
+-
+-    if tenant_id:
+-        instances, has_more = nova.server_list(
+-            request, search_opts={'tenant_id': tenant_id}, all_tenants=True)
+-    else:
+-        instances, has_more = nova.server_list(request)
+-
+-    # Fetch deleted flavors if necessary.
+-    missing_flavors = [instance.flavor['id'] for instance in instances
+-                       if instance.flavor['id'] not in flavors]
+-    for missing in missing_flavors:
+-        if missing not in flavors:
+-            try:
+-                flavors[missing] = nova.flavor_get(request, missing)
+-            except Exception:
+-                flavors[missing] = {}
+-                exceptions.handle(request, ignore=True)
+-
+-    usages.tally('instances', len(instances))
+     usages.tally('floating_ips', len(floating_ips))
+ 
+-    if 'volumes' not in disabled_quotas:
+-        if tenant_id:
+-            opts = {'alltenants': 1, 'tenant_id': tenant_id}
+-            volumes = cinder.volume_list(request, opts)
+-            snapshots = cinder.volume_snapshot_list(request, opts)
+-        else:
+-            volumes = cinder.volume_list(request)
+-            snapshots = cinder.volume_snapshot_list(request)
+-        usages.tally('gigabytes', sum([int(v.size) for v in volumes]))
+-        usages.tally('volumes', len(volumes))
+-        usages.tally('snapshots', len(snapshots))
+-
+-    # Sum our usage based on the flavors of the instances.
+-    for flavor in [flavors[instance.flavor['id']] for instance in instances]:
+-        usages.tally('cores', getattr(flavor, 'vcpus', None))
+-        usages.tally('ram', getattr(flavor, 'ram', None))
+-
+-    # Initialise the tally if no instances have been launched yet
+-    if len(instances) == 0:
+-        usages.tally('cores', 0)
+-        usages.tally('ram', 0)
+-
+     return usages
+ 
+ 
+-- 
+1.8.3.1
+
