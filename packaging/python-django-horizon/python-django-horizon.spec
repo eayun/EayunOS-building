@@ -6,7 +6,7 @@
 
 Name:       python-django-horizon
 Version:    2014.2.1
-Release:    4%{?dist_eayunstack}
+Release:    5%{?dist_eayunstack}
 Summary:    Django application for talking to Openstack
 
 Group:      Development/Libraries
