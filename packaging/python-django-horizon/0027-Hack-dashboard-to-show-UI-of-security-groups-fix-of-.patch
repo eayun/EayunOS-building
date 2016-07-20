@@ -1,0 +1,25 @@
+From 581b3d8f380d1e3afba7ef689ccdc02eda0aae04 Mon Sep 17 00:00:00 2001
+From: walteryang47 <walteryang47@gmail.com>
+Date: Wed, 20 Jul 2016 12:32:15 +0800
+Subject: [PATCH] Hack dashboard to show UI of security groups, fix of #7606
+
+Signed-off-by: walteryang47 <walteryang47@gmail.com>
+---
+ openstack_dashboard/dashboards/project/access_and_security/tabs.py | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/openstack_dashboard/dashboards/project/access_and_security/tabs.py b/openstack_dashboard/dashboards/project/access_and_security/tabs.py
+index 30e44c5..9b40809 100644
+--- a/openstack_dashboard/dashboards/project/access_and_security/tabs.py
++++ b/openstack_dashboard/dashboards/project/access_and_security/tabs.py
+@@ -43,7 +43,6 @@ class SecurityGroupsTab(tabs.TableTab):
+     name = _("Security Groups")
+     slug = "security_groups_tab"
+     template_name = "horizon/common/_detail_table.html"
+-    permissions = ('openstack.services.compute',)
+ 
+     def get_security_groups_data(self):
+         try:
+-- 
+2.4.11
+
