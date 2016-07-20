@@ -1,0 +1,83 @@
+From c539812a8efd3851b2bb8916778be6b635d8e0a1 Mon Sep 17 00:00:00 2001
+From: eric <eric.peterson1@twcable.com>
+Date: Mon, 4 May 2015 13:48:07 -0600
+Subject: [PATCH] LBaas v1 Associate Monitor to Pool Fails
+
+The associate monitor fails to show monitors to choose from
+within horizon.  The monitor list code has changed where
+you can no longer list monitors with a filter criteria.
+This change switches to grab needed monitors one at a time.
+
+Fixes: redmine #3719
+
+Change-Id: Ibc5233028507c66de459e84e91f65c9557940ea5
+Closes-bug: #1398754
+(cherry picked from commit 0dde489a81ea8599e75d45ac0be34048a5c366d0)
+Signed-off-by: huntxu <mhuntxu@gmail.com>
+
+Conflicts:
+    openstack_dashboard/api/lbaas.py
+
+Signed-off-by: huntxu <mhuntxu@gmail.com>
+---
+ openstack_dashboard/api/lbaas.py                  |  7 +++++--
+ openstack_dashboard/test/api_tests/lbaas_tests.py | 11 +++++++----
+ 2 files changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/openstack_dashboard/api/lbaas.py b/openstack_dashboard/api/lbaas.py
+index 61bd9e9..dd232a7 100644
+--- a/openstack_dashboard/api/lbaas.py
++++ b/openstack_dashboard/api/lbaas.py
+@@ -187,8 +187,11 @@ def _pool_get(request, pool_id, expand_resource=False):
+                                expand_name_only=False)
+         pool['members'] = _member_list(request, expand_pool=False,
+                                        pool_id=pool_id)
+-        pool['health_monitors'] = pool_health_monitor_list(
+-            request, id=pool['health_monitors'])
++        monitors = []
++        for monitor_id in pool['health_monitors']:
++            monitors.append(_pool_health_monitor_get(request, monitor_id,
++                                                     False))
++        pool['health_monitors'] = monitors
+     return Pool(pool)
+ 
+ 
+diff --git a/openstack_dashboard/test/api_tests/lbaas_tests.py b/openstack_dashboard/test/api_tests/lbaas_tests.py
+index e0cf693..757d65c 100644
+--- a/openstack_dashboard/test/api_tests/lbaas_tests.py
++++ b/openstack_dashboard/test/api_tests/lbaas_tests.py
+@@ -185,7 +185,7 @@ class LbaasApiTests(test.APITestCase):
+ 
+     @test.create_stubs({neutronclient: ('show_pool', 'show_vip',
+                                         'list_members',
+-                                        'list_health_monitors',),
++                                        'show_health_monitor',),
+                         api.neutron: ('subnet_get',)})
+     def test_pool_get(self):
+         pool = self.pools.first()
+@@ -198,8 +198,10 @@ class LbaasApiTests(test.APITestCase):
+         neutronclient.show_vip(pool.vip_id).AndReturn(vip_dict)
+         neutronclient.list_members(pool_id=pool.id).AndReturn(
+             {'members': self.api_members.list()})
+-        neutronclient.list_health_monitors(id=pool.health_monitors).AndReturn(
+-            {'health_monitors': [self.api_monitors.first()]})
++        monitor = self.api_monitors.first()
++        for pool_mon in pool.health_monitors:
++            neutronclient.show_health_monitor(pool_mon).AndReturn(
++                {'health_monitors': [monitor]})
+         self.mox.ReplayAll()
+ 
+         ret_val = api.lbaas.pool_get(self.request, pool.id)
+@@ -210,7 +212,8 @@ class LbaasApiTests(test.APITestCase):
+         self.assertEqual(ret_val.subnet.id, subnet.id)
+         self.assertEqual(2, len(ret_val.members))
+         self.assertIsInstance(ret_val.members[0], api.lbaas.Member)
+-        self.assertEqual(1, len(ret_val.health_monitors))
++        self.assertEqual(len(pool.health_monitors),
++                         len(ret_val.health_monitors))
+         self.assertIsInstance(ret_val.health_monitors[0],
+                               api.lbaas.PoolMonitor)
+ 
+-- 
+2.4.1
+

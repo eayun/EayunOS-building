@@ -1,0 +1,382 @@
+From 947bc63977134472eaf0e7fb5ca2f1b2bab3836a Mon Sep 17 00:00:00 2001
+From: Sam Betts <sam@code-smash.net>
+Date: Wed, 4 Mar 2015 10:22:24 +0000
+Subject: Pass correct project ID to get tenant_usages
+
+The current implementation of tenant_quota_usages did not allow for
+queries regarding projects that were not the currently active project,
+this meant that when an admin went to edit or create a project it tried
+to verify the usages against the wrong project. This patch adds the
+code for passing a project id to the tenant_quota_usages function so
+that the usages can be fetched for a specific project, as well as
+removes the need for usage validation on creation of a new project.
+
+(cherry picked from commit 193d40a41472adc6c27e18256524afb2dacb9156)
+
+Change-Id: I3ec84d14c8be7e3aae066119e963c4093f8aa345
+Closes-Bug: 1380701
+
+diff --git a/openstack_dashboard/dashboards/identity/projects/tests.py b/openstack_dashboard/dashboards/identity/projects/tests.py
+index ac3c33c..0bb5001 100644
+--- a/openstack_dashboard/dashboards/identity/projects/tests.py
++++ b/openstack_dashboard/dashboards/identity/projects/tests.py
+@@ -216,7 +216,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+                             ['<CreateProjectInfo: createprojectinfoaction>',
+                              '<UpdateProjectMembers: update_members>',
+                              '<UpdateProjectGroups: update_group_members>',
+-                             '<UpdateProjectQuota: update_quotas>'])
++                             '<CreateProjectQuota: create_quotas>'])
+ 
+     def test_add_project_get_domain(self):
+         domain = self.domains.get(id="1")
+@@ -304,7 +304,6 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+         users = self._get_all_users(domain_id)
+         groups = self._get_all_groups(domain_id)
+         roles = self.roles.list()
+-        quota_usages = self.quota_usages.first()
+ 
+         # init
+         quotas.get_disabled_quotas(IsA(http.HttpRequest)) \
+@@ -324,8 +323,6 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+             .AndReturn(groups)
+ 
+         # handle
+-        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
+-                .AndReturn(quota_usages)
+         project_details = self._get_project_info(project)
+         quota_data = self._get_quota_info(quota)
+ 
+@@ -458,7 +455,6 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+         users = self._get_all_users(domain_id)
+         groups = self._get_all_groups(domain_id)
+         roles = self.roles.list()
+-        quota_usages = self.quota_usages.first()
+ 
+         # init
+         api.keystone.get_default_domain(IsA(http.HttpRequest)) \
+@@ -477,8 +473,6 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+             .AndReturn(groups)
+ 
+         # handle
+-        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
+-                .AndReturn(quota_usages)
+         project_details = self._get_project_info(project)
+ 
+         api.keystone.tenant_create(IsA(http.HttpRequest), **project_details) \
+@@ -500,57 +494,6 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+                               domain_context_name=domain.name)
+         self.test_add_project_tenant_create_error()
+ 
+-    @test.create_stubs({api.keystone: ('user_list',
+-                                       'role_list',
+-                                       'group_list',
+-                                       'get_default_domain',
+-                                       'get_default_role',
+-                                       'add_tenant_user_role'),
+-                        quotas: ('get_default_quota_data',
+-                                 'get_disabled_quotas',
+-                                 'tenant_quota_usages'),
+-                        api.nova: ('tenant_quota_update',)})
+-    def test_project_quota_update_invalid_value(self):
+-        project = self.tenants.first()
+-        quota = self.quotas.first()
+-        default_role = self.roles.first()
+-        default_domain = self._get_default_domain()
+-        domain_id = default_domain.id
+-        users = self._get_all_users(domain_id)
+-        groups = self._get_all_groups(domain_id)
+-        roles = self.roles.list()
+-        quota_usages = self.quota_usages.first()
+-        quota_usages['instances']['used'] = 5
+-
+-        # init
+-        api.keystone.get_default_domain(IsA(http.HttpRequest)) \
+-            .AndReturn(default_domain)
+-        quotas.get_disabled_quotas(IsA(http.HttpRequest)) \
+-            .AndReturn(self.disabled_quotas.first())
+-        quotas.get_default_quota_data(IsA(http.HttpRequest)).AndReturn(quota)
+-
+-        api.keystone.get_default_role(IsA(http.HttpRequest)) \
+-            .MultipleTimes().AndReturn(default_role)
+-        api.keystone.user_list(IsA(http.HttpRequest), domain=domain_id) \
+-            .AndReturn(users)
+-        api.keystone.role_list(IsA(http.HttpRequest)) \
+-            .MultipleTimes().AndReturn(roles)
+-        api.keystone.group_list(IsA(http.HttpRequest), domain=domain_id) \
+-            .AndReturn(groups)
+-        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
+-                .AndReturn(quota_usages)
+-
+-        self.mox.ReplayAll()
+-
+-        workflow_data = {}
+-        workflow_data.update(self._get_workflow_data(project, quota))
+-        workflow_data['instances'] = 2
+-        url = reverse('horizon:identity:projects:create')
+-        res = self.client.post(url, workflow_data)
+-        msg = 'Quota value(s) cannot be less than the current usage ' \
+-              'value(s): 5 Instances used.'
+-        self.assertContains(res, msg)
+-
+     @test.create_stubs({api.keystone: ('tenant_create',
+                                        'user_list',
+                                        'role_list',
+@@ -571,7 +514,6 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+         users = self._get_all_users(domain_id)
+         groups = self._get_all_groups(domain_id)
+         roles = self.roles.list()
+-        quota_usages = self.quota_usages.first()
+ 
+         # init
+         api.keystone.get_default_domain(IsA(http.HttpRequest)) \
+@@ -590,8 +532,6 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+             .AndReturn(groups)
+ 
+         # handle
+-        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
+-                .AndReturn(quota_usages)
+         project_details = self._get_project_info(project)
+         quota_data = self._get_quota_info(quota)
+ 
+@@ -660,7 +600,6 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+         users = self._get_all_users(domain_id)
+         groups = self._get_all_groups(domain_id)
+         roles = self.roles.list()
+-        quota_usages = self.quota_usages.first()
+ 
+         # init
+         api.keystone.get_default_domain(IsA(http.HttpRequest)) \
+@@ -679,8 +618,6 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+             .AndReturn(groups)
+ 
+         # handle
+-        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
+-                .AndReturn(quota_usages)
+         project_details = self._get_project_info(project)
+         quota_data = self._get_quota_info(quota)
+ 
+@@ -745,7 +682,6 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+         users = self._get_all_users(domain_id)
+         groups = self._get_all_groups(domain_id)
+         roles = self.roles.list()
+-        quota_usages = self.quota_usages.first()
+ 
+         # init
+         api.keystone.get_default_domain(IsA(http.HttpRequest)) \
+@@ -763,9 +699,6 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+         api.keystone.group_list(IsA(http.HttpRequest), domain=domain_id) \
+             .AndReturn(groups)
+ 
+-        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
+-                .AndReturn(quota_usages)
+-
+         self.mox.ReplayAll()
+ 
+         workflow_data = self._get_workflow_data(project, quota)
+@@ -1103,7 +1036,7 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
+                                     group='3',
+                                     project=self.tenant.id)
+ 
+-        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
++        quotas.tenant_quota_usages(IsA(http.HttpRequest), tenant_id=project.id) \
+                 .AndReturn(quota_usages)
+ 
+         nova_updated_quota = dict([(key, updated_quota[key]) for key in
+@@ -1266,7 +1199,7 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
+         updated_quota = self._get_quota_info(quota)
+ 
+         # handle
+-        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
++        quotas.tenant_quota_usages(IsA(http.HttpRequest), tenant_id=project.id) \
+                 .AndReturn(quota_usages)
+         api.keystone.tenant_update(IsA(http.HttpRequest),
+                                    project.id,
+@@ -1442,7 +1375,7 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
+                                     group='3',
+                                     project=self.tenant.id)
+ 
+-        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
++        quotas.tenant_quota_usages(IsA(http.HttpRequest), tenant_id=project.id) \
+                 .AndReturn(quota_usages)
+ 
+         nova_updated_quota = dict([(key, updated_quota[key]) for key in
+@@ -1562,7 +1495,7 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
+         updated_quota = self._get_quota_info(quota)
+ 
+         # handle
+-        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
++        quotas.tenant_quota_usages(IsA(http.HttpRequest), tenant_id=project.id) \
+                 .AndReturn(quota_usages)
+         api.keystone.tenant_update(IsA(http.HttpRequest),
+                                    project.id,
+diff --git a/openstack_dashboard/dashboards/identity/projects/views.py b/openstack_dashboard/dashboards/identity/projects/views.py
+index 49fce4e..8b76fab 100644
+--- a/openstack_dashboard/dashboards/identity/projects/views.py
++++ b/openstack_dashboard/dashboards/identity/projects/views.py
+@@ -150,14 +150,14 @@ class CreateProjectView(workflows.WorkflowView):
+             except Exception:
+                 error_msg = _('Unable to retrieve default Neutron quota '
+                               'values.')
+-                self.add_error_to_step(error_msg, 'update_quotas')
++                self.add_error_to_step(error_msg, 'create_quotas')
+ 
+             for field in quotas.QUOTA_FIELDS:
+                 initial[field] = quota_defaults.get(field).limit
+ 
+         except Exception:
+             error_msg = _('Unable to retrieve default quota values.')
+-            self.add_error_to_step(error_msg, 'update_quotas')
++            self.add_error_to_step(error_msg, 'create_quotas')
+ 
+         return initial
+ 
+diff --git a/openstack_dashboard/dashboards/identity/projects/workflows.py b/openstack_dashboard/dashboards/identity/projects/workflows.py
+index 72b715f..73bd2d2 100644
+--- a/openstack_dashboard/dashboards/identity/projects/workflows.py
++++ b/openstack_dashboard/dashboards/identity/projects/workflows.py
+@@ -40,7 +40,7 @@ PROJECT_USER_MEMBER_SLUG = "update_members"
+ PROJECT_GROUP_MEMBER_SLUG = "update_group_members"
+ 
+ 
+-class UpdateProjectQuotaAction(workflows.Action):
++class ProjectQuotaAction(workflows.Action):
+     ifcb_label = _("Injected File Content (Bytes)")
+     metadata_items = forms.IntegerField(min_value=-1,
+                                         label=_("Metadata Items"))
+@@ -74,23 +74,21 @@ class UpdateProjectQuotaAction(workflows.Action):
+     subnet = forms.IntegerField(min_value=-1, label=_("Subnets"))
+ 
+     def __init__(self, request, *args, **kwargs):
+-        super(UpdateProjectQuotaAction, self).__init__(request,
+-                                                       *args,
+-                                                       **kwargs)
++        super(ProjectQuotaAction, self).__init__(request,
++                                                 *args,
++                                                 **kwargs)
+         disabled_quotas = quotas.get_disabled_quotas(request)
+         for field in disabled_quotas:
+             if field in self.fields:
+                 self.fields[field].required = False
+                 self.fields[field].widget = forms.HiddenInput()
+ 
+-    class Meta:
+-        name = _("Quota")
+-        slug = 'update_quotas'
+-        help_text = _("Set maximum quotas for the project.")
+ 
++class UpdateProjectQuotaAction(ProjectQuotaAction):
+     def clean(self):
+         cleaned_data = super(UpdateProjectQuotaAction, self).clean()
+-        usages = quotas.tenant_quota_usages(self.request)
++        usages = quotas.tenant_quota_usages(
++            self.request, tenant_id=self.initial['project_id'])
+         # Validate the quota values before updating quotas.
+         bad_values = []
+         for key, value in cleaned_data.items():
+@@ -107,6 +105,18 @@ class UpdateProjectQuotaAction(workflows.Action):
+             raise forms.ValidationError(msg)
+         return cleaned_data
+ 
++    class Meta:
++        name = _("Quota")
++        slug = 'update_quotas'
++        help_text = _("Set maximum quotas for the project.")
++
++
++class CreateProjectQuotaAction(ProjectQuotaAction):
++    class Meta:
++        name = _("Quota")
++        slug = 'create_quotas'
++        help_text = _("Set maximum quotas for the project.")
++
+ 
+ class UpdateProjectQuota(workflows.Step):
+     action_class = UpdateProjectQuotaAction
+@@ -114,6 +124,12 @@ class UpdateProjectQuota(workflows.Step):
+     contributes = quotas.QUOTA_FIELDS
+ 
+ 
++class CreateProjectQuota(workflows.Step):
++    action_class = CreateProjectQuotaAction
++    depends_on = ("project_id",)
++    contributes = quotas.QUOTA_FIELDS
++
++
+ class CreateProjectInfoAction(workflows.Action):
+     # Hide the domain_id and domain_name by default
+     domain_id = forms.CharField(label=_("Domain ID"),
+@@ -360,7 +376,7 @@ class CreateProject(workflows.Workflow):
+     success_url = "horizon:identity:projects:index"
+     default_steps = (CreateProjectInfo,
+                      UpdateProjectMembers,
+-                     UpdateProjectQuota)
++                     CreateProjectQuota)
+ 
+     def __init__(self, request=None, context_seed=None, entry_point=None,
+                  *args, **kwargs):
+@@ -368,7 +384,7 @@ class CreateProject(workflows.Workflow):
+             self.default_steps = (CreateProjectInfo,
+                                   UpdateProjectMembers,
+                                   UpdateProjectGroups,
+-                                  UpdateProjectQuota)
++                                  CreateProjectQuota)
+         super(CreateProject, self).__init__(request=request,
+                                             context_seed=context_seed,
+                                             entry_point=entry_point,
+diff --git a/openstack_dashboard/usage/quotas.py b/openstack_dashboard/usage/quotas.py
+index 9bd6780..c51aed0 100644
+--- a/openstack_dashboard/usage/quotas.py
++++ b/openstack_dashboard/usage/quotas.py
+@@ -215,13 +215,15 @@ def get_disabled_quotas(request):
+ 
+ 
+ @memoized
+-def tenant_quota_usages(request):
+-    # Get our quotas and construct our usage object.
++def tenant_quota_usages(request, tenant_id=None):
++    """Get our quotas and construct our usage object."""
++
+     disabled_quotas = get_disabled_quotas(request)
+ 
+     usages = QuotaUsage()
+     for quota in get_tenant_quota_data(request,
+-                                       disabled_quotas=disabled_quotas):
++                                       disabled_quotas=disabled_quotas,
++                                       tenant_id=tenant_id):
+         usages.add_quota(quota)
+ 
+     # Get our usages.
+@@ -232,7 +234,13 @@ def tenant_quota_usages(request):
+     except Exception:
+         pass
+     flavors = dict([(f.id, f) for f in nova.flavor_list(request)])
+-    instances, has_more = nova.server_list(request)
++
++    if tenant_id:
++        instances, has_more = nova.server_list(
++            request, search_opts={'tenant_id': tenant_id}, all_tenants=True)
++    else:
++        instances, has_more = nova.server_list(request)
++
+     # Fetch deleted flavors if necessary.
+     missing_flavors = [instance.flavor['id'] for instance in instances
+                        if instance.flavor['id'] not in flavors]
+@@ -248,8 +256,13 @@ def tenant_quota_usages(request):
+     usages.tally('floating_ips', len(floating_ips))
+ 
+     if 'volumes' not in disabled_quotas:
+-        volumes = cinder.volume_list(request)
+-        snapshots = cinder.volume_snapshot_list(request)
++        if tenant_id:
++            opts = {'alltenants': 1, 'tenant_id': tenant_id}
++            volumes = cinder.volume_list(request, opts)
++            snapshots = cinder.volume_snapshot_list(request, opts)
++        else:
++            volumes = cinder.volume_list(request)
++            snapshots = cinder.volume_snapshot_list(request)
+         usages.tally('gigabytes', sum([int(v.size) for v in volumes]))
+         usages.tally('volumes', len(volumes))
+         usages.tally('snapshots', len(snapshots))
+-- 
+cgit v0.10.2
+
