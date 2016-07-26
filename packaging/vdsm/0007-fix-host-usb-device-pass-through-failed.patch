@@ -1,0 +1,65 @@
+From c19b29f904fd967ca24823d73c0bf46f8e502961 Mon Sep 17 00:00:00 2001
+From: linqili <linqili2006@users.noreply.github.com>
+Date: Tue, 26 Jul 2016 18:33:28 +0800
+Subject: [PATCH] fix bug #7431: host usb device pass through failed
+
+Signed-off-by: linqili <linqili2006@users.noreply.github.com>
+---
+ vdsm/virt/vm.py | 41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+diff --git a/vdsm/virt/vm.py b/vdsm/virt/vm.py
+index 620b4da..83977ad 100644
+--- a/vdsm/virt/vm.py
++++ b/vdsm/virt/vm.py
+@@ -333,6 +333,47 @@ class Vm(object):
+         self._numaInfo = {}
+         self._vmJobs = None
+         self._clientPort = ''
++        self._usb_pass_through_fix()
++
++    def _usb_pass_through_fix(self):
++        # fix bug 7431: host usb pass through failed
++        # step 1 
++        # add USB 1.x/2.0/3.0 controller
++        usb_models = ['piix3-uhci', 'ehci', 'nec-xhci']
++        ports = {}
++        for index in range(0, len(usb_models)):
++            self.conf['devices'].append({
++                'type': hwclass.CONTROLLER, 'device': 'usb',
++                'index': str(index), 'model': usb_models[index]
++            }) 
++            # Port 0 on any USB controller is always the USB Root Hub
++            # start adding devices in Port 1 and later
++            ports[usb_models[index]] = 1
++        # step 2
++        # add correct address for each host usb device in order to match
++        # the corresponding controller
++        for dev in self.conf['devices']:
++            if dev['type'] == 'hostdev' and dev['device'].startswith('usb'):
++                path = dev['device'][4:].replace('_','.').replace('.','-', 1)
++                with open('/sys/bus/usb/devices/%s/speed' % path) as f:
++                    speed = int(f.readline())
++                    indx = 0
++                    # according to https://en.wikipedia.org/wiki/USB#USB_1.x
++                    # choose the speed argument to identify 
++                    # the type of USB controller (shouldn't be wrong)
++                    if speed < 480: # USB 1.x
++                        indx = usb_models.index('piix3-uhci')
++                    elif speed == 480: # USB 2.0
++                        indx = usb_models.index('ehci')
++                    elif speed > 480: #USB 3.0
++                        indx = usb_models.index('nec-xhci')
++                    dev['address'] = {
++                        'type': 'usb',
++                        'bus': str(indx),
++                        'port': str(ports[usb_models[indx]])
++                    }
++                    # for multiple usb device
++                    ports[usb_models[indx]] += 1 
+ 
+     def _get_lastStatus(self):
+         # note that we don't use _statusLock here. One of the reasons is the
+-- 
+2.7.4
+
