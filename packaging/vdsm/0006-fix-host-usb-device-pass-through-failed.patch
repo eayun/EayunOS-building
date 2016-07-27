@@ -20,7 +20,7 @@ index 620b4da..83977ad 100644
 +
 +    def _usb_pass_through_fix(self):
 +        # fix bug 7431: host usb pass through failed
-+        # step 1 
++        # step 1
 +        # add USB 1.x/2.0/3.0 controller
 +        usb_models = ['piix3-uhci', 'ehci', 'nec-xhci']
 +        ports = {}
@@ -28,7 +28,7 @@ index 620b4da..83977ad 100644
 +            self.conf['devices'].append({
 +                'type': hwclass.CONTROLLER, 'device': 'usb',
 +                'index': str(index), 'model': usb_models[index]
-+            }) 
++            })
 +            # Port 0 on any USB controller is always the USB Root Hub
 +            # start adding devices in Port 1 and later
 +            ports[usb_models[index]] = 1
@@ -42,7 +42,7 @@ index 620b4da..83977ad 100644
 +                    speed = int(f.readline())
 +                    indx = 0
 +                    # according to https://en.wikipedia.org/wiki/USB#USB_1.x
-+                    # choose the speed argument to identify 
++                    # choose the speed argument to identify
 +                    # the type of USB controller (shouldn't be wrong)
 +                    if speed < 480: # USB 1.x
 +                        indx = usb_models.index('piix3-uhci')
@@ -56,7 +56,7 @@ index 620b4da..83977ad 100644
 +                        'port': str(ports[usb_models[indx]])
 +                    }
 +                    # for multiple usb device
-+                    ports[usb_models[indx]] += 1 
++                    ports[usb_models[indx]] += 1
  
      def _get_lastStatus(self):
          # note that we don't use _statusLock here. One of the reasons is the
