@@ -1,0 +1,114 @@
+From 3755c8c5fc28a9b05ba1ab732f441ceeb52d4189 Mon Sep 17 00:00:00 2001
+From: linqili <linqili2006@users.noreply.github.com>
+Date: Thu, 28 Jul 2016 14:16:04 +0800
+Subject: [PATCH] fix unplugging host usb device makes VM unstopped
+
+1. fix: unplug host usb devices when VM is running
+and then gracefully stop the VM in the guest, causing
+the VM' state does not change from 'Power Down' to
+'Stopped'.
+
+2. fix: can not start VM when host usb devices was
+unplugged.
+
+Signed-off-by: linqili <linqili2006@users.noreply.github.com>
+---
+ vdsm/virt/vm.py | 67 +++++++++++++++++++++++++++++++++++++++------------------
+ 1 file changed, 46 insertions(+), 21 deletions(-)
+
+diff --git a/vdsm/virt/vm.py b/vdsm/virt/vm.py
+index 83977ad..159fb5f 100644
+--- a/vdsm/virt/vm.py
++++ b/vdsm/virt/vm.py
+@@ -335,6 +335,10 @@ class Vm(object):
+         self._clientPort = ''
+         self._usb_pass_through_fix()
+ 
++    def _usb_device_name_to_path(self, device):
++        return '/sys/bus/usb/devices/%s' % \
++                device[4:].replace('_','.').replace('.','-', 1)
++
+     def _usb_pass_through_fix(self):
+         # fix bug 7431: host usb pass through failed
+         # step 1 
+@@ -352,28 +356,41 @@ class Vm(object):
+         # step 2
+         # add correct address for each host usb device in order to match
+         # the corresponding controller
++        devices = []
+         for dev in self.conf['devices']:
+-            if dev['type'] == 'hostdev' and dev['device'].startswith('usb'):
+-                path = dev['device'][4:].replace('_','.').replace('.','-', 1)
+-                with open('/sys/bus/usb/devices/%s/speed' % path) as f:
+-                    speed = int(f.readline())
+-                    indx = 0
+-                    # according to https://en.wikipedia.org/wiki/USB#USB_1.x
+-                    # choose the speed argument to identify 
+-                    # the type of USB controller (shouldn't be wrong)
+-                    if speed < 480: # USB 1.x
+-                        indx = usb_models.index('piix3-uhci')
+-                    elif speed == 480: # USB 2.0
+-                        indx = usb_models.index('ehci')
+-                    elif speed > 480: #USB 3.0
+-                        indx = usb_models.index('nec-xhci')
+-                    dev['address'] = {
+-                        'type': 'usb',
+-                        'bus': str(indx),
+-                        'port': str(ports[usb_models[indx]])
+-                    }
+-                    # for multiple usb device
+-                    ports[usb_models[indx]] += 1 
++            if dev['type'] == hwclass.HOSTDEV and \
++                               dev['device'].startswith('usb'):
++                path = self._usb_device_name_to_path(dev['device'])
++                if os.path.exists(path):
++                    try:
++                        with open(path + '/speed') as f:
++                            speed = int(f.readline())
++                            indx = 0
++                            # https://en.wikipedia.org/wiki/USB#USB_1.x
++                            # choose the speed argument to identify 
++                            # the type of USB controller (shouldn't be wrong)
++                            if speed < 480: # USB 1.x
++                                indx = usb_models.index('piix3-uhci')
++                            elif speed == 480: # USB 2.0
++                                indx = usb_models.index('ehci')
++                            elif speed > 480: #USB 3.0
++                                indx = usb_models.index('nec-xhci')
++                            dev['address'] = {
++                                'type': 'usb',
++                                'bus': str(indx),
++                                'port': str(ports[usb_models[indx]])
++                            }
++                            # for multiple usb device
++                            ports[usb_models[indx]] += 1 
++                    except Exception, e:
++                        logging.debug(str(e))
++                else:
++                    # USB devices already unplugged
++                    # delete this device
++                    continue
++            devices.append(dev)
++
++        self.conf['devices'] = devices
+ 
+     def _get_lastStatus(self):
+         # note that we don't use _statusLock here. One of the reasons is the
+@@ -1343,6 +1360,14 @@ class Vm(object):
+             except hostdev.NoIOMMUSupportException:
+                 self.log.exception('Could not reattach device %s back to host '
+                                    'due to missing IOMMU support.')
++            except libvirt.libvirtError, e:
++                # fix bug 7431: unplug host usb devices when VM is running
++                # and then gracefully stop the VM in the guest, causing 
++                # the VM' state does not change from 'Power Down' to 'Stopped'
++                if dev_name.startswith('usb'):
++                    path = self._usb_device_name_to_path(dev_name)
++                    if not os.path.exists(path):
++                        self.log.debug('usb %s was unplugged!!' % dev_name)
+ 
+     def _host_devices(self):
+         for device in self._devices[hwclass.HOSTDEV][:]:
+-- 
+2.7.4
+
