@@ -499,6 +499,8 @@
       <packagereq type="mandatory">vdsm-python</packagereq> 
       <packagereq type="mandatory">vdsm-xmlrpc</packagereq> 
       <packagereq type="mandatory">vdsm-yajsonrpc</packagereq> 
+      <packagereq type="mandatory">virt-v2v</packagereq> 
+      <packagereq type="mandatory">virtio-win-drivers</packagereq> 
       <packagereq type="mandatory">virt-viewer</packagereq> 
       <packagereq type="mandatory">xorg-x11-font-utils</packagereq> 
       <packagereq type="mandatory">yajl</packagereq> 
@@ -605,21 +607,6 @@
       <packagereq type="mandatory">saslwrapper</packagereq> 
       <packagereq type="mandatory">vdsm-hook-macspoof</packagereq>
       <packagereq type="mandatory">neutron-appliance</packagereq>
-    </packagelist>
-  </group>
-  <group>
-    <id>v2v-tools</id>
-    <default>true</default>
-    <uservisible>false</uservisible>
-    <display_order>1024</display_order>
-    <langonly/>
-    <name>v2v tools</name>
-    <name xml:lang="zh_CN">v2v 工具</name>
-    <description>v2v tools</description>
-    <description xml:lang="zh_CN">v2v 工具</description>
-    <packagelist>
-      <packagereq type="mandatory">virt-v2v</packagereq> 
-      <packagereq type="mandatory">virtio-win-drivers</packagereq> 
     </packagelist>
   </group>
 </comps>
