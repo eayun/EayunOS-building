@@ -1,0 +1,8 @@
+在fedora 23上搭建编译环境说明：
+
+1. 安装NSIS交叉编译环境:
+	$ dnf install mingw32-nsis
+
+2. 安装NSIS编译插件
+	$ wget http://nsis.sourceforge.net/mediawiki/images/c/c9/NSIS_Simple_Service_Plugin_1.30.zip
+	$ upzip NSIS_Simple_Service_Plugin_1.30.zip && cp SimpleSC.dll /usr/share/nsis/Plugin
