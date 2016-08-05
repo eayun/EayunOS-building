@@ -30,7 +30,7 @@ index 83977ad..159fb5f 100644
 +
      def _usb_pass_through_fix(self):
          # fix bug 7431: host usb pass through failed
-         # step 1 
+         # step 1
 @@ -352,28 +356,41 @@ class Vm(object):
          # step 2
          # add correct address for each host usb device in order to match
@@ -43,7 +43,7 @@ index 83977ad..159fb5f 100644
 -                    speed = int(f.readline())
 -                    indx = 0
 -                    # according to https://en.wikipedia.org/wiki/USB#USB_1.x
--                    # choose the speed argument to identify 
+-                    # choose the speed argument to identify
 -                    # the type of USB controller (shouldn't be wrong)
 -                    if speed < 480: # USB 1.x
 -                        indx = usb_models.index('piix3-uhci')
@@ -57,7 +57,7 @@ index 83977ad..159fb5f 100644
 -                        'port': str(ports[usb_models[indx]])
 -                    }
 -                    # for multiple usb device
--                    ports[usb_models[indx]] += 1 
+-                    ports[usb_models[indx]] += 1
 +            if dev['type'] == hwclass.HOSTDEV and \
 +                               dev['device'].startswith('usb'):
 +                path = self._usb_device_name_to_path(dev['device'])
@@ -67,7 +67,7 @@ index 83977ad..159fb5f 100644
 +                            speed = int(f.readline())
 +                            indx = 0
 +                            # https://en.wikipedia.org/wiki/USB#USB_1.x
-+                            # choose the speed argument to identify 
++                            # choose the speed argument to identify
 +                            # the type of USB controller (shouldn't be wrong)
 +                            if speed < 480: # USB 1.x
 +                                indx = usb_models.index('piix3-uhci')
@@ -81,7 +81,7 @@ index 83977ad..159fb5f 100644
 +                                'port': str(ports[usb_models[indx]])
 +                            }
 +                            # for multiple usb device
-+                            ports[usb_models[indx]] += 1 
++                            ports[usb_models[indx]] += 1
 +                    except Exception, e:
 +                        logging.debug(str(e))
 +                else:
@@ -100,7 +100,7 @@ index 83977ad..159fb5f 100644
                                     'due to missing IOMMU support.')
 +            except libvirt.libvirtError, e:
 +                # fix bug 7431: unplug host usb devices when VM is running
-+                # and then gracefully stop the VM in the guest, causing 
++                # and then gracefully stop the VM in the guest, causing
 +                # the VM' state does not change from 'Power Down' to 'Stopped'
 +                if dev_name.startswith('usb'):
 +                    path = self._usb_device_name_to_path(dev_name)

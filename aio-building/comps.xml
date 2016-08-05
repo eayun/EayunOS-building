@@ -500,6 +500,7 @@
       <packagereq type="mandatory">vdsm-xmlrpc</packagereq> 
       <packagereq type="mandatory">vdsm-yajsonrpc</packagereq> 
       <packagereq type="mandatory">virt-v2v</packagereq> 
+      <packagereq type="mandatory">virtio-win-drivers</packagereq> 
       <packagereq type="mandatory">virt-viewer</packagereq> 
       <packagereq type="mandatory">xorg-x11-font-utils</packagereq> 
       <packagereq type="mandatory">yajl</packagereq> 
