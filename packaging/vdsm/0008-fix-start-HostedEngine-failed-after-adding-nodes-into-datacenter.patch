@@ -1,0 +1,39 @@
+From 376916287fdec0041278fa7c0d4cce25d9e62cf3 Mon Sep 17 00:00:00 2001
+From: Pan Liyang <liyang.pan@eayun.com>
+Date: Fri, 5 Aug 2016 23:20:49 +0800
+Subject: [PATCH] fix: start HostedEngine failed after adding nodes into
+ datacenter
+
+Signed-off-by: Pan Liyang <liyang.pan@eayun.com>
+---
+ vdsm/virt/vm.py | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/vdsm/virt/vm.py b/vdsm/virt/vm.py
+index c3c9816..f23a3dd 100644
+--- a/vdsm/virt/vm.py
++++ b/vdsm/virt/vm.py
+@@ -343,9 +343,19 @@ class Vm(object):
+         # fix bug 7431: host usb pass through failed
+         # step 1
+         # add USB 1.x/2.0/3.0 controller
++        # check if usb controller has been added
++        usb_controller_index = 0
+         usb_models = ['piix3-uhci', 'ehci', 'nec-xhci']
+         ports = {}
+-        for index in range(0, len(usb_models)):
++        for dev in self.conf['devices']:
++            if dev['type'] == hwclass.CONTROLLER and \
++                                dev['device'] == 'usb':
++                dev['index'] = str(usb_controller_index)
++                dev['model'] = usb_models[usb_controller_index]
++                ports[usb_models[usb_controller_index]] = 1
++                usb_controller_index += 1
++
++        for index in range(usb_controller_index, len(usb_models)):
+             self.conf['devices'].append({
+                 'type': hwclass.CONTROLLER, 'device': 'usb',
+                 'index': str(index), 'model': usb_models[index]
+-- 
+2.5.0
+
