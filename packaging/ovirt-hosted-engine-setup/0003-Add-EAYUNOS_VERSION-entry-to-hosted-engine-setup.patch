@@ -1,0 +1,50 @@
+From e5609256bccc69ddb4904a39dced25d2206b7862 Mon Sep 17 00:00:00 2001
+From: walteryang <walteryang47@users.noreply.github.com>
+Date: Mon, 8 Aug 2016 18:10:20 +0800
+Subject: [PATCH] Add EAYUNOS_VERSION entry to hosted engine setup
+
+For the sake of three eayunos distributions
+
+Signed-off-by: walteryang <walteryang47@users.noreply.github.com>
+---
+ src/ovirt_hosted_engine_setup/constants.py             | 1 +
+ src/plugins/ovirt-hosted-engine-setup/vm/cloud_init.py | 4 ++++
+ 2 files changed, 5 insertions(+)
+
+diff --git a/src/ovirt_hosted_engine_setup/constants.py b/src/ovirt_hosted_engine_setup/constants.py
+index 7dcc6e5..5d85d54 100644
+--- a/src/ovirt_hosted_engine_setup/constants.py
++++ b/src/ovirt_hosted_engine_setup/constants.py
+@@ -469,6 +469,7 @@ class NetworkEnv(object):
+ class EngineEnv(object):
+ 
+     ADMIN_PASSWORD = 'OVEHOSTED_ENGINE/adminPassword'
++    EAYUNOS_VERSION = 'OVEHOSTED_ENGINE/eayunosVersion'
+ 
+     @ohostedattrs(
+         summary=True,
+diff --git a/src/plugins/ovirt-hosted-engine-setup/vm/cloud_init.py b/src/plugins/ovirt-hosted-engine-setup/vm/cloud_init.py
+index e03a521..2385b38 100644
+--- a/src/plugins/ovirt-hosted-engine-setup/vm/cloud_init.py
++++ b/src/plugins/ovirt-hosted-engine-setup/vm/cloud_init.py
+@@ -817,6 +817,7 @@ class Plugin(plugin.PluginBase):
+                 ' - content: |\n'
+                 '     [environment:default]\n'
+                 '     OVESETUP_CONFIG/adminPassword=str:{password}\n'
++                '     OVESETUP_CONFIG/eayunosVersion=str:{version}\n'
+                 '     OVESETUP_CONFIG/fqdn=str:{fqdn}\n'
+                 '     OVESETUP_PKI/organization=str:{org}\n'
+                 '   path: {heanswers}\n'
+@@ -841,6 +842,9 @@ class Plugin(plugin.PluginBase):
+                 password=self.environment[
+                     ohostedcons.EngineEnv.ADMIN_PASSWORD
+                 ],
++                version=self.environment[
++                    ohostedcons.EngineEnv.EAYUNOS_VERSION
++                ],
+                 applianceanswers=ohostedcons.Const.CLOUD_INIT_APPLIANCEANSWERS,
+                 heanswers=ohostedcons.Const.CLOUD_INIT_HEANSWERS,
+                 port=(
+-- 
+1.8.3.1
+
