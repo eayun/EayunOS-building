@@ -10,7 +10,6 @@
       <groupid>anaconda-tools</groupid>
       <groupid>eayunos-base-system</groupid>
       <groupid>eayunos-management-system</groupid>
-      <groupid>neutron-host-client</groupid>
     </grouplist>
   </environment>
   <group>
@@ -500,7 +499,6 @@
       <packagereq type="mandatory">vdsm-xmlrpc</packagereq> 
       <packagereq type="mandatory">vdsm-yajsonrpc</packagereq> 
       <packagereq type="mandatory">virt-v2v</packagereq> 
-      <packagereq type="mandatory">virtio-win-drivers</packagereq> 
       <packagereq type="mandatory">virt-viewer</packagereq> 
       <packagereq type="mandatory">xorg-x11-font-utils</packagereq> 
       <packagereq type="mandatory">yajl</packagereq> 
@@ -526,87 +524,6 @@
     <packagelist>
       <packagereq type="mandatory">ovirt-engine-appliance</packagereq> 
       <packagereq type="mandatory">ovirt-hosted-engine-setup</packagereq> 
-    </packagelist>
-  </group>
-  <group>
-    <id>neutron-host-client</id>
-    <default>true</default>
-    <uservisible>false</uservisible>
-    <display_order>1024</display_order>
-    <langonly/>
-    <name>Neutron environment to be managed by neutron appliance</name>
-    <name xml:lang="zh_CN">EayunOS 主机的 neutron 环境</name>
-    <description/>
-    <packagelist>
-      <packagereq type="mandatory">openstack-neutron</packagereq> 
-      <packagereq type="mandatory">openstack-neutron-openvswitch</packagereq> 
-      <packagereq type="mandatory">vdsm-hook-openstacknet</packagereq> 
-      <packagereq type="mandatory">MySQL-python</packagereq> 
-      <packagereq type="mandatory">PyYAML</packagereq> 
-      <packagereq type="mandatory">conntrack-tools</packagereq> 
-      <packagereq type="mandatory">crudini</packagereq> 
-      <packagereq type="mandatory">dnsmasq-utils</packagereq> 
-      <packagereq type="mandatory">ipset</packagereq> 
-      <packagereq type="mandatory">ipset-libs</packagereq> 
-      <packagereq type="mandatory">keepalived</packagereq> 
-      <packagereq type="mandatory">libnetfilter_cthelper</packagereq> 
-      <packagereq type="mandatory">libnetfilter_cttimeout</packagereq> 
-      <packagereq type="mandatory">libnetfilter_queue</packagereq> 
-      <packagereq type="mandatory">libyaml</packagereq> 
-      <packagereq type="mandatory">lm_sensors-libs</packagereq> 
-      <packagereq type="mandatory">net-snmp-agent-libs</packagereq> 
-      <packagereq type="mandatory">openstack-utils</packagereq> 
-      <packagereq type="mandatory">openvswitch</packagereq> 
-      <packagereq type="mandatory">pyOpenSSL</packagereq> 
-      <packagereq type="mandatory">pyparsing</packagereq> 
-      <packagereq type="mandatory">python-alembic</packagereq> 
-      <packagereq type="mandatory">python-amqp</packagereq> 
-      <packagereq type="mandatory">python-anyjson</packagereq> 
-      <packagereq type="mandatory">python-babel</packagereq> 
-      <packagereq type="mandatory">python-beaker</packagereq> 
-      <packagereq type="mandatory">python-cliff</packagereq> 
-      <packagereq type="mandatory">python-cmd2</packagereq> 
-      <packagereq type="mandatory">python-editor</packagereq> 
-      <packagereq type="mandatory">python-eventlet</packagereq> 
-      <packagereq type="mandatory">python-greenlet</packagereq> 
-      <packagereq type="mandatory">python-httplib2</packagereq> 
-      <packagereq type="mandatory">python-jinja2</packagereq> 
-      <packagereq type="mandatory">python-jsonrpclib</packagereq> 
-      <packagereq type="mandatory">python-keyring</packagereq> 
-      <packagereq type="mandatory">python-keystoneclient</packagereq> 
-      <packagereq type="mandatory">python-keystonemiddleware</packagereq> 
-      <packagereq type="mandatory">python-kombu</packagereq> 
-      <packagereq type="mandatory">python-mako</packagereq> 
-      <packagereq type="mandatory">python-markupsafe</packagereq> 
-      <packagereq type="mandatory">python-migrate</packagereq> 
-      <packagereq type="mandatory">python-neutron</packagereq> 
-      <packagereq type="mandatory">python-neutronclient</packagereq> 
-      <packagereq type="mandatory">python-novaclient</packagereq> 
-      <packagereq type="mandatory">python-oslo-config</packagereq> 
-      <packagereq type="mandatory">python-oslo-db</packagereq> 
-      <packagereq type="mandatory">python-oslo-i18n</packagereq> 
-      <packagereq type="mandatory">python-oslo-messaging</packagereq> 
-      <packagereq type="mandatory">python-oslo-rootwrap</packagereq> 
-      <packagereq type="mandatory">python-oslo-utils</packagereq> 
-      <packagereq type="mandatory">python-paste</packagereq> 
-      <packagereq type="mandatory">python-paste-deploy</packagereq> 
-      <packagereq type="mandatory">python-prettytable</packagereq> 
-      <packagereq type="mandatory">python-qpid</packagereq> 
-      <packagereq type="mandatory">python-qpid-common</packagereq> 
-      <packagereq type="mandatory">python-repoze-lru</packagereq> 
-      <packagereq type="mandatory">python-routes</packagereq> 
-      <packagereq type="mandatory">python-saslwrapper</packagereq> 
-      <packagereq type="mandatory">python-setuptools</packagereq> 
-      <packagereq type="mandatory">python-simplejson</packagereq> 
-      <packagereq type="mandatory">python-sqlalchemy</packagereq> 
-      <packagereq type="mandatory">python-sqlparse</packagereq> 
-      <packagereq type="mandatory">python-stevedore</packagereq> 
-      <packagereq type="mandatory">python-tempita</packagereq> 
-      <packagereq type="mandatory">python2-iso8601</packagereq> 
-      <packagereq type="mandatory">pytz</packagereq> 
-      <packagereq type="mandatory">saslwrapper</packagereq> 
-      <packagereq type="mandatory">vdsm-hook-macspoof</packagereq>
-      <packagereq type="mandatory">neutron-appliance</packagereq>
     </packagelist>
   </group>
 </comps>
