@@ -510,6 +510,8 @@
       <packagereq type="mandatory">eayunos-console-node</packagereq> 
       <packagereq type="mandatory">ovirt-imageio-daemon</packagereq> 
       <packagereq type="mandatory">ovirt-imageio-common</packagereq> 
+      <packagereq type="mandatory">eayunos-lic</packagereq>         
+      <packagereq type="mandatory">python-dateutil</packagereq>
     </packagelist>
   </group>
   <group>
