@@ -1,0 +1,122 @@
+From ad3ee0161a94249ab89795ced9eb7c201639c939 Mon Sep 17 00:00:00 2001
+From: walteryang <walteryang47@users.noreply.github.com>
+Date: Sun, 28 Aug 2016 00:06:31 +0800
+Subject: [PATCH] Add api: getHostedStorageID
+
+Signed-off-by: walteryang <walteryang47@users.noreply.github.com>
+---
+ client/vdsClient.py          |  7 +++++++
+ vdsm/API.py                  |  9 +++++++++
+ vdsm/rpc/Bridge.py           |  1 +
+ vdsm/rpc/bindingxmlrpc.py    |  5 +++++
+ vdsm/rpc/vdsmapi-schema.json | 14 ++++++++++++++
+ 5 files changed, 36 insertions(+)
+
+diff --git a/client/vdsClient.py b/client/vdsClient.py
+index fe263f2..809e860 100755
+--- a/client/vdsClient.py
++++ b/client/vdsClient.py
+@@ -730,6 +730,10 @@ class service:
+             print(entry)
+         return 0, ''
+ 
++    def getHostedStorageID(self, args):
++        print("Hosted Storage Domain ID: %s" % self.s.getHostedStorageID().get('uuid'))
++        return 0, ''
++
+     def getDeviceList(self, args):
+         if len(args) == 0:
+             res = self.s.getDeviceList()
+@@ -2522,6 +2526,9 @@ if __name__ == '__main__':
+                                    'Get storage domains list of pool or all '
+                                    'domains if pool omitted.'
+                                    )),
++        'getHostedStorageID': (serv.getHostedStorageID,
++                                  ('Get hosted_storage storage domain uuid'
++                                   )),
+         'createVolume': (serv.createVolume,
+                          ('<sdUUID> <spUUID> <imgUUID> <size> <volFormat> '
+                           '<preallocate> <diskType> <newVolUUID> <descr> '
+diff --git a/vdsm/API.py b/vdsm/API.py
+index 079a605..ae9b964 100644
+--- a/vdsm/API.py
++++ b/vdsm/API.py
+@@ -1695,6 +1695,15 @@ class Global(APIBase):
+         return self._irs.getStorageDomainsList(storagepoolID, domainClass,
+                                                storageType, remotePath)
+ 
++    def getHostedStorageID(self):
++        try:
++            uuid = os.popen(
++                'cat /etc/ovirt-hosted-engine/hosted-engine.conf|grep sdUUID'
++                ).read().strip().split('=')[1]
++            return {'status': doneCode, 'uuid': uuid}
++        except:
++            return {'status': doneCode, 'uuid': '00000000-0000-0000-0000-000000000000'}
++
+     def getConnectedStoragePools(self):
+         return self._irs.getConnectedStoragePoolsList()
+ 
+diff --git a/vdsm/rpc/Bridge.py b/vdsm/rpc/Bridge.py
+index 9fe6584..481a5b8 100644
+--- a/vdsm/rpc/Bridge.py
++++ b/vdsm/rpc/Bridge.py
+@@ -428,6 +428,7 @@ command_info = {
+     'Host_getLVMVolumeGroups': {'ret': 'vglist'},
+     'Host_getStats': {'ret': 'info'},
+     'Host_getStorageDomains': {'ret': 'domlist'},
++    'Host_getHostedStorageID': {'ret': 'uuid'},
+     'Host_getStorageRepoStats': {'ret': Host_getStorageRepoStats_Ret},
+     'Host_hostdevListByCaps': {'ret': 'deviceList'},
+     'Host_hostdevChangeNumvfs': {},
+diff --git a/vdsm/rpc/bindingxmlrpc.py b/vdsm/rpc/bindingxmlrpc.py
+index aab9272..785d7dc 100644
+--- a/vdsm/rpc/bindingxmlrpc.py
++++ b/vdsm/rpc/bindingxmlrpc.py
+@@ -1023,6 +1023,10 @@ class BindingXMLRPC(object):
+         return api.getStorageDomains(spUUID, domainClass, storageType,
+                                      remotePath)
+ 
++    def getHostedStorageID(self):
++        api = API.Global()
++        return api.getHostedStorageID()
++
+     def poolsGetConnectedList(self, options=None):
+         api = API.Global()
+         return api.getConnectedStoragePools()
+@@ -1210,6 +1214,7 @@ class BindingXMLRPC(object):
+                 (self.vgGetInfo, 'getVGInfo'),
+                 (self.vgRemove, 'removeVG'),
+                 (self.domainsGetList, 'getStorageDomainsList'),
++                (self.getHostedStorageID, 'getHostedStorageID'),
+                 (self.poolsGetConnectedList, 'getConnectedStoragePoolsList'),
+                 (self.storageRepoGetStats, 'repoStats'),
+                 (self.startMonitoringDomain, 'startMonitoringDomain'),
+diff --git a/vdsm/rpc/vdsmapi-schema.json b/vdsm/rpc/vdsmapi-schema.json
+index 50739af..2f975e4 100644
+--- a/vdsm/rpc/vdsmapi-schema.json
++++ b/vdsm/rpc/vdsmapi-schema.json
+@@ -2324,6 +2324,20 @@
+  'returns': ['UUID']}
+ 
+ ##
++# @Host.getHostedStorageID:
++#
++# Get hosted_storage domain uuid from hosted engine local configuration file.
++#
++# Returns:
++# UUID of the Storage Domain
++#
++# Since: 4.10.0
++##
++{'command': {'class': 'Host', 'name': 'getHostedStorageID'},
++ 'data': {},
++ 'returns': 'UUID'}
++
++##
+ # @Host.getStorageRepoStats:
+ #
+ # Get statistics and liveness of currently monitored Storage Domains.
+-- 
+1.9.3
+
